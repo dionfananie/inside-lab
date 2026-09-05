@@ -714,12 +714,16 @@ export default function Home({
                             {line}
                           </pre>
                         ))}
-                        {exercise.mode !== 'console' && (
-                          <pre>
-                            <span className="console-chevron">↳</span>
-                            {output.value}
-                          </pre>
-                        )}
+                        {exercise.mode !== 'console' &&
+                          !(
+                            output.value === 'undefined' &&
+                            output.logs?.length
+                          ) && (
+                            <pre>
+                              <span className="console-chevron">↳</span>
+                              {output.value}
+                            </pre>
+                          )}
                         {exercise.mode === 'console' &&
                           !output.logs?.length && (
                             <p className="muted">
