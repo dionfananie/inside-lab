@@ -94,17 +94,55 @@ const openingPair = {
   "}": "{",
 } as const;
 
+const settingsKey = "inside-lab:play:settings:v1";
+const themeNames = Object.keys(themes) as ThemeName[];
+
+type StoredSettings = {
+  theme: ThemeName;
+  fontSize: number;
+};
+
+function loadSettings(): StoredSettings {
+  const fallback: StoredSettings = {
+    theme: "Taffy",
+    fontSize: defaultFontSize,
+  };
+  if (typeof window === "undefined") return fallback;
+  try {
+    const raw = window.localStorage.getItem(settingsKey);
+    if (!raw) return fallback;
+    const parsed = JSON.parse(raw) as Partial<StoredSettings>;
+    return {
+      theme: themeNames.includes(parsed.theme as ThemeName)
+        ? (parsed.theme as ThemeName)
+        : fallback.theme,
+      fontSize:
+        Number.isFinite(parsed.fontSize) && typeof parsed.fontSize === "number"
+          ? Math.min(
+              maximumFontSize,
+              Math.max(minimumFontSize, Math.round(parsed.fontSize)),
+            )
+          : fallback.fontSize,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
 export default function RuntimeJsPage() {
+  const initialSettings = useRef<StoredSettings>(loadSettings()).current;
   const [source, setSource] = useState(initialSource);
-  const [themeName, setThemeName] = useState<ThemeName>("Taffy");
+  const [themeName, setThemeName] = useState<ThemeName>(initialSettings.theme);
   const [entries, setEntries] = useState<RuntimeEntry[]>([]);
   const [status, setStatus] = useState("Starting");
   const [elapsed, setElapsed] = useState(0);
   const [revision, setRevision] = useState(0);
   const [paused, setPaused] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
-  const [fontSize, setFontSize] = useState(defaultFontSize);
-  const [fontSizeInput, setFontSizeInput] = useState(String(defaultFontSize));
+  const [fontSize, setFontSize] = useState(initialSettings.fontSize);
+  const [fontSizeInput, setFontSizeInput] = useState(
+    String(initialSettings.fontSize),
+  );
   const editorRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const theme = themes[themeName];
@@ -121,6 +159,15 @@ export default function RuntimeJsPage() {
   const lineCount = source.split("\n").length;
   const lineHeight = Math.round(fontSize * 1.5);
   const editorContentHeight = lineCount * lineHeight + 36;
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(
+        settingsKey,
+        JSON.stringify({ theme: themeName, fontSize }),
+      );
+    } catch {}
+  }, [themeName, fontSize]);
 
   useLayoutEffect(() => {
     const editor = editorRef.current;
@@ -211,6 +258,32 @@ export default function RuntimeJsPage() {
     const value = textarea.value;
     const closing = closingPair[event.key as keyof typeof closingPair];
     const opening = openingPair[event.key as keyof typeof openingPair];
+
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      const indentUnit = "  ";
+      const lineStart = value.lastIndexOf("\n", start - 1) + 1;
+      const leading = /^[ \t]*/.exec(value.slice(lineStart, start))?.[0] ?? "";
+      const before = value.slice(0, start);
+      const after = value.slice(end);
+      const previousChar = start > 0 ? value[start - 1] : "";
+      const nextChar = after[0] ?? "";
+
+      const openedHere = "{[(".includes(previousChar);
+      const closerAdjacent = "}])".includes(nextChar);
+
+      if (previousChar === "{" && closerAdjacent) {
+        const innerIndent = leading + indentUnit;
+        setSource(`${before}\n${innerIndent}\n${leading}${after}`);
+        setEditorSelection(before.length + 1 + innerIndent.length);
+        return;
+      }
+
+      const nextIndent = openedHere ? leading + indentUnit : leading;
+      setSource(`${before}\n${nextIndent}${after}`);
+      setEditorSelection(before.length + 1 + nextIndent.length);
+      return;
+    }
 
     if (closing) {
       event.preventDefault();

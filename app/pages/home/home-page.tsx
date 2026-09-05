@@ -37,7 +37,10 @@ type HomePageProps = {
   totalParts: number;
   totalExercises: number;
   ruleCount: number;
+  origin?: string;
 };
+
+const siteName = "insideLab";
 
 const chapterDescriptions: Record<string, string> = {
   "values-types-operators":
@@ -62,13 +65,29 @@ export default function HomePage({
   totalParts,
   totalExercises,
   ruleCount,
+  origin,
 }: HomePageProps) {
   const [selectedStage, setSelectedStage] = useState(0);
   const selectedExercise = firstExercises[selectedStage];
   const firstChapterHref = `/js/${chapters[0].id}`;
+  const websiteSchema = origin
+    ? {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: siteName,
+        inLanguage: "id-ID",
+        url: origin,
+      }
+    : null;
 
   return (
     <main className="home-page">
+      {websiteSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+      )}
       <header className="home-header home-reveal">
         <InsideLabBrand area="Lab Belajar" />
         <nav className="home-nav" aria-label="Navigasi utama">

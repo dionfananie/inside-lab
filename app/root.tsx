@@ -5,12 +5,14 @@ import {
 	Outlet,
 	Scripts,
 	ScrollRestoration,
+	useMatches,
 } from "react-router";
 
 import type { Route } from "./+types/root";
 import "./globals.css";
 
 export const links: Route.LinksFunction = () => [
+	{ rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
 	{ rel: "preconnect", href: "https://fonts.googleapis.com" },
 	{
 		rel: "preconnect",
@@ -24,11 +26,27 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+	const matches = useMatches();
+	let canonical: string | undefined;
+	for (let index = matches.length - 1; index >= 0; index--) {
+		const data = matches[index].data as
+			| { canonical?: string }
+			| null
+			| undefined;
+		if (data?.canonical) {
+			canonical = data.canonical;
+			break;
+		}
+	}
+
 	return (
 		<html lang="id">
 			<head>
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
+				<meta name="theme-color" content="#173f2f" />
+				<meta name="format-detection" content="telephone=no" />
+				{canonical ? <link rel="canonical" href={canonical} /> : null}
 				<Meta />
 				<Links />
 			</head>

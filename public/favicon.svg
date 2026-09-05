@@ -1,1 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect width="40" height="40" rx="9" fill="#204c39"/><text x="8" y="28" fill="#e5edc4" font-size="26" font-family="monospace" font-weight="bold">js</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+  <rect x="0.75" y="0.75" width="38.5" height="38.5" rx="9" fill="#173f2f" stroke="#2e5b47" stroke-width="1.5"/>
+  <circle cx="10.5" cy="10.5" r="2.4" fill="#edf6e7"/>
+  <rect x="8.1" y="15" width="4.8" height="15.5" rx="2.4" fill="#edf6e7"/>
+  <path d="M17 8.5h5v16.8h7v5H17z" fill="#aad168"/>
+  <circle cx="33" cy="27.8" r="3" fill="#ff86d0"/>
+</svg>

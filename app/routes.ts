@@ -4,6 +4,8 @@ export default [
 	index("routes/home.tsx"),
 	route("play", "routes/play.tsx"),
 	route("js/:chapterId", "routes/js-chapter.tsx"),
+	route("robots.txt", "routes/robots-txt.ts"),
+	route("sitemap.xml", "routes/sitemap-xml.ts"),
 	route("computational-logic", "routes/computational-logic.tsx"),
 	route(
 		"computational-logic/proportional-logic",

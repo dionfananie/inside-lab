@@ -1,6 +1,7 @@
 import type { Route } from "./+types/home";
 
 import { chapters } from "~/content/curriculum";
+import { canonicalOf, originOf, socialMeta } from "~/lib/seo";
 import HomePage, {
 	type HomeChapter,
 	type HomeExercise,
@@ -8,7 +9,7 @@ import HomePage, {
 import "~/pages/home/home.css";
 import { rules } from "~/pages/logic-lab/rules";
 
-export function loader() {
+export function loader({ request }: Route.LoaderArgs) {
 	const chapterSummaries: HomeChapter[] = chapters.map((chapter) => ({
 		id: chapter.id,
 		title: chapter.title,
@@ -43,26 +44,23 @@ export function loader() {
 			0,
 		),
 		ruleCount: rules.length,
+		canonical: canonicalOf(request.url),
+		origin: originOf(request.url),
 	};
 }
 
-export const meta: Route.MetaFunction = () => [
-	{ title: "insideLab — Belajar JavaScript & Logika secara Interaktif" },
-	{
-		name: "description",
-		content:
-			"Belajar JavaScript dan logika dengan mencoba langsung. Jelajahi 4 bab, 105 latihan bertahap, tabel kebenaran, dan runtime JavaScript interaktif.",
-	},
-	{ property: "og:title", content: "insideLab — Belajar dengan mencoba" },
-	{
-		property: "og:description",
-		content:
-			"Materi, editor kode, kasus uji, dan laboratorium logika dalam satu pengalaman belajar interaktif.",
-	},
-	{ property: "og:type", content: "website" },
-	{ property: "og:locale", content: "id_ID" },
-	{ name: "twitter:card", content: "summary" },
-	{ name: "robots", content: "index, follow" },
+const homeTitle = "insideLab — Belajar JavaScript & Logika secara Interaktif";
+const homeDescription =
+	"Belajar JavaScript dan logika dengan mencoba langsung. Jelajahi 4 bab, 105 latihan bertahap, tabel kebenaran, dan runtime JavaScript interaktif.";
+
+export const meta: Route.MetaFunction = ({ loaderData }) => [
+	{ title: homeTitle },
+	{ name: "description", content: homeDescription },
+	...socialMeta({
+		canonical: loaderData.canonical,
+		title: homeTitle,
+		description: homeDescription,
+	}),
 ];
 
 export default function Home({ loaderData }: Route.ComponentProps) {
