@@ -1,21 +1,22 @@
 import { Editor, type Theme } from '@sugar-high/react';
 
-const editorTheme: Theme = {
-  background: '#15241f',
+
+const editorTheme = {
+  background: '#1d3027',
   foreground: '#e4efe8',
-  caret: '#d3f4af',
-  lineNumber: '#729085',
-  lineHighlight: '#20332b',
-  identifier: '#e4efe8',
-  keyword: '#c7b6ef',
-  string: '#c2dfa3',
-  class: '#f0bf82',
-  property: '#e4efe8',
-  entity: '#f0bf82',
-  jsxliterals: '#c2dfa3',
-  sign: '#b6dcc5',
-  comment: '#8caaa0',
-};
+  caret: "#f8f8f2",
+  lineNumber: "#6272a4",
+  lineHighlight: "#44475a",
+  identifier: "#f8f8f2",
+  keyword: "#ff79c6",
+  string: "#f1fa8c",
+  class: "#8be9fd",
+  property: "#50fa7b",
+  entity: "#bd93f9",
+  jsxliterals: "#ffb86c",
+  sign: "#ff79c6",
+  comment: "#6272a4",
+} satisfies Theme;
 
 export function LearningEditor({
   value,

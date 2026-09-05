@@ -481,9 +481,9 @@ h1 {
 .code-editor [data-sh-code-content] {
   min-height: 100%;
 }
-.code-editor [data-sh-code] pre,
+.code-editor [data-sh-code] code,
 .code-editor textarea {
-  line-height: 1.8;
+  line-height: 1.5;
 }
 .code-editor textarea {
   z-index: 1;
@@ -668,6 +668,26 @@ h1 {
 .prediction-explanation {
   padding: 12px 0 0;
   color: #63715b;
+}
+.no-value-hint {
+  margin-top: 10px;
+  padding: 12px 15px;
+  background: #f9f5e9;
+  border: 1px solid #e8e0c8;
+  border-radius: 8px;
+  color: #827245;
+  font-size: 13px;
+}
+.no-value-hint strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #6b5c2e;
+}
+.no-value-hint p {
+  line-height: 1.6;
+}
+.no-value-hint code {
+  font-size: 12px;
 }
 .hint-panel {
   display: flex;
