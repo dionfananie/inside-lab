@@ -1,6 +1,6 @@
-import type { CSSProperties } from "react";
+import type { CSSProperties, KeyboardEvent } from "react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Code, Editor } from "@sugar-high/react";
+import { Code, Editor, type Theme } from "@sugar-high/react";
 import {
   monokai,
   oneDarkPro,
@@ -9,9 +9,10 @@ import {
   vercel,
 } from "@sugar-high/react/themes";
 import {
-  ArrowUpRight,
   Braces,
   CircleCheck,
+  Maximize2,
+  Minimize2,
   Palette,
   RotateCcw,
   Square,
@@ -49,7 +50,25 @@ project
 // Async works here, too
 await Promise.resolve('Ready when you are ✨')`;
 
+const draculaTheme = {
+  background: "#282a36",
+  foreground: "#f8f8f2",
+  caret: "#f8f8f2",
+  lineNumber: "#6272a4",
+  lineHighlight: "#44475a",
+  identifier: "#f8f8f2",
+  keyword: "#ff79c6",
+  string: "#f1fa8c",
+  class: "#8be9fd",
+  property: "#50fa7b",
+  entity: "#bd93f9",
+  jsxliterals: "#ffb86c",
+  sign: "#ff79c6",
+  comment: "#6272a4",
+} satisfies Theme;
+
 const themes = {
+  Dracula: draculaTheme,
   Taffy: taffy.dark,
   "One Dark": oneDarkPro.dark,
   "Tokyo Night": tokyoNight.dark,
@@ -59,6 +78,22 @@ const themes = {
 
 type ThemeName = keyof typeof themes;
 
+const defaultFontSize = 14;
+const minimumFontSize = 10;
+const maximumFontSize = 32;
+
+const closingPair = {
+  "(": ")",
+  "[": "]",
+  "{": "}",
+} as const;
+
+const openingPair = {
+  ")": "(",
+  "]": "[",
+  "}": "{",
+} as const;
+
 export default function RuntimeJsPage() {
   const [source, setSource] = useState(initialSource);
   const [themeName, setThemeName] = useState<ThemeName>("Taffy");
@@ -67,11 +102,25 @@ export default function RuntimeJsPage() {
   const [elapsed, setElapsed] = useState(0);
   const [revision, setRevision] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [fullscreen, setFullscreen] = useState(false);
+  const [fontSize, setFontSize] = useState(defaultFontSize);
+  const [fontSizeInput, setFontSizeInput] = useState(String(defaultFontSize));
   const editorRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const theme = themes[themeName];
+  const themePalette = [
+    theme.keyword,
+    theme.string,
+    theme.class,
+    theme.property,
+    theme.entity,
+  ];
+  const fullscreenLabel = fullscreen
+    ? "Exit fullscreen editor"
+    : "Fullscreen editor";
   const lineCount = source.split("\n").length;
-  const editorContentHeight = lineCount * 21 + 36;
+  const lineHeight = Math.round(fontSize * 1.5);
+  const editorContentHeight = lineCount * lineHeight + 36;
 
   useLayoutEffect(() => {
     const editor = editorRef.current;
@@ -81,19 +130,19 @@ export default function RuntimeJsPage() {
     textarea.scrollTop = 0;
     const caretLine =
       source.slice(0, textarea.selectionStart).split("\n").length - 1;
-    const caretTop = 18 + caretLine * 21;
+    const caretTop = 18 + caretLine * lineHeight;
     const safeEdge = 18;
 
     if (caretTop < editor.scrollTop + safeEdge) {
       editor.scrollTop = Math.max(0, caretTop - safeEdge);
     } else if (
-      caretTop + 21 >
+      caretTop + lineHeight >
       editor.scrollTop + editor.clientHeight - safeEdge
     ) {
       editor.scrollTop =
-        caretTop + 21 - editor.clientHeight + safeEdge;
+        caretTop + lineHeight - editor.clientHeight + safeEdge;
     }
-  }, [source]);
+  }, [source, lineHeight]);
 
   useEffect(() => {
     if (paused) {
@@ -123,16 +172,118 @@ export default function RuntimeJsPage() {
     };
   }, [source, revision, paused]);
 
+  useEffect(() => {
+    if (!fullscreen) return;
+
+    const previousOverflow = document.documentElement.style.overflow;
+    const exitFullscreen = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") setFullscreen(false);
+    };
+
+    document.documentElement.style.overflow = "hidden";
+    window.addEventListener("keydown", exitFullscreen);
+
+    return () => {
+      document.documentElement.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", exitFullscreen);
+    };
+  }, [fullscreen]);
+
+  function setEditorSelection(start: number, end = start) {
+    requestAnimationFrame(() => {
+      textareaRef.current?.setSelectionRange(start, end);
+    });
+  }
+
+  function handleEditorKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+    if (
+      event.nativeEvent.isComposing ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.altKey
+    ) {
+      return;
+    }
+
+    const textarea = event.currentTarget;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const value = textarea.value;
+    const closing = closingPair[event.key as keyof typeof closingPair];
+    const opening = openingPair[event.key as keyof typeof openingPair];
+
+    if (closing) {
+      event.preventDefault();
+      setSource(
+        `${value.slice(0, start)}${event.key}${value.slice(start, end)}${closing}${value.slice(end)}`,
+      );
+      setEditorSelection(start + 1, end + 1);
+      return;
+    }
+
+    if (
+      start === end &&
+      opening &&
+      value[start] === event.key
+    ) {
+      event.preventDefault();
+      setEditorSelection(start + 1);
+      return;
+    }
+
+    if (event.key === "Backspace" && start === end && start > 0) {
+      const opening = value[start - 1] as keyof typeof closingPair;
+      if (closingPair[opening] === value[start]) {
+        event.preventDefault();
+        setSource(`${value.slice(0, start - 1)}${value.slice(start + 1)}`);
+        setEditorSelection(start - 1);
+      }
+    }
+  }
+
   function restoreStarter() {
     setSource(initialSource);
     setPaused(false);
     setRevision((current) => current + 1);
   }
 
+  function changeFontSize(value: string) {
+    setFontSizeInput(value);
+    const nextFontSize = Number(value);
+    if (
+      Number.isFinite(nextFontSize) &&
+      nextFontSize >= minimumFontSize &&
+      nextFontSize <= maximumFontSize
+    ) {
+      setFontSize(nextFontSize);
+    }
+  }
+
+  function commitFontSize() {
+    const parsedFontSize =
+      fontSizeInput.trim() === "" ? fontSize : Number(fontSizeInput);
+    const nextFontSize = Number.isFinite(parsedFontSize)
+      ? Math.min(
+          maximumFontSize,
+          Math.max(minimumFontSize, Math.round(parsedFontSize)),
+        )
+      : fontSize;
+
+    setFontSize(nextFontSize);
+    setFontSizeInput(String(nextFontSize));
+  }
+
   return (
     <main
-      className={`runtime-workspace ${themeName === "Vercel Light" ? "runtime-light" : "dark"}`}
-      style={{ "--runtime-editor-bg": theme.background } as CSSProperties}
+      className={`runtime-workspace ${themeName === "Vercel Light" ? "runtime-light" : "dark"}${
+        fullscreen ? " runtime-fullscreen" : ""
+      }`}
+      style={
+        {
+          "--runtime-editor-bg": theme.background,
+          "--runtime-font-size": `${fontSize}px`,
+        } as CSSProperties
+      }
     >
       <header className="runtime-topbar">
         <a className="runtime-brand" href="/play" aria-label="Runtime JS home">
@@ -143,14 +294,6 @@ export default function RuntimeJsPage() {
           <span className="runtime-beta">PLAYGROUND</span>
         </a>
         <div className="runtime-header-note">Less setup. More experimenting.</div>
-        <a
-          className="runtime-sugar-link"
-          href="https://github.com/huozhi/sugar-high"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Powered by Sugar High <ArrowUpRight size={14} />
-        </a>
       </header>
 
       <section className="runtime-intro">
@@ -173,17 +316,62 @@ export default function RuntimeJsPage() {
             <span className="runtime-file-dot" />
           </div>
           <div className="runtime-toolbar-controls">
-            <Palette size={16} />
-            <NativeSelect
-              aria-label="Editor color theme"
-              value={themeName}
-              onChange={(event) => setThemeName(event.target.value as ThemeName)}
-            >
-              {Object.keys(themes).map((name) => (
-                <NativeSelectOption key={name}>{name}</NativeSelectOption>
-              ))}
-            </NativeSelect>
+            <div className="runtime-theme-picker">
+              <Palette size={16} />
+              <span
+                className="runtime-theme-swatches"
+                aria-hidden="true"
+                title={`${themeName} color palette`}
+              >
+                {themePalette.map((color, index) => (
+                  <i
+                    className="runtime-theme-swatch"
+                    style={{ backgroundColor: color }}
+                    key={`${color}-${index}`}
+                  />
+                ))}
+              </span>
+              <NativeSelect
+                aria-label="Editor and output color theme"
+                value={themeName}
+                onChange={(event) => setThemeName(event.target.value as ThemeName)}
+              >
+                {Object.keys(themes).map((name) => (
+                  <NativeSelectOption key={name}>{name}</NativeSelectOption>
+                ))}
+              </NativeSelect>
+            </div>
+            <label className="runtime-font-size">
+              <span className="runtime-font-size-label">Font size</span>
+              <input
+                type="number"
+                min={minimumFontSize}
+                max={maximumFontSize}
+                step="1"
+                inputMode="numeric"
+                value={fontSizeInput}
+                onChange={(event) => changeFontSize(event.currentTarget.value)}
+                onBlur={commitFontSize}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") event.currentTarget.blur();
+                }}
+                aria-label="Editor font size in pixels"
+              />
+              <span className="runtime-font-size-unit" aria-hidden="true">
+                px
+              </span>
+            </label>
             <span className="runtime-toolbar-divider" />
+            <Button
+              variant="ghost"
+              className="runtime-tool-button"
+              onClick={() => setFullscreen((current) => !current)}
+              title={fullscreenLabel}
+              aria-label={fullscreenLabel}
+              aria-pressed={fullscreen}
+            >
+              {fullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+            </Button>
             <Button
               variant="ghost"
               className="runtime-tool-button"
@@ -221,12 +409,13 @@ export default function RuntimeJsPage() {
                 lineNumbers
                 wrapLongLines={false}
                 padding="24px"
-                fontSize="14px"
+                fontSize={`${fontSize}px`}
                 fontFamily="'Geist Mono', 'Cascadia Code', 'SFMono-Regular', Consolas, monospace"
                 theme={theme}
                 textareaProps={{
                   "aria-label": "JavaScript source code",
                   spellCheck: false,
+                  onKeyDown: handleEditorKeyDown,
                 }}
               />
             </div>
@@ -266,7 +455,13 @@ export default function RuntimeJsPage() {
                       </span>
                       <span>{entry.line ? `line ${entry.line}` : entry.kind}</span>
                     </div>
-                    <Code lang="javascript" theme={theme} padding="0" wrapLongLines>
+                    <Code
+                      lang="javascript"
+                      theme={theme}
+                      padding="0"
+                      wrapLongLines
+                      fontSize={`${fontSize}px`}
+                    >
                       {entry.text}
                     </Code>
                   </div>

@@ -28,6 +28,35 @@
   text-decoration: none;
 }
 
+.runtime-workspace.runtime-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  height: 100dvh;
+  padding: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.runtime-fullscreen .runtime-topbar,
+.runtime-fullscreen .runtime-intro,
+.runtime-fullscreen .runtime-page-footer {
+  display: none;
+}
+
+.runtime-fullscreen .runtime-playground {
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+}
+
+.runtime-fullscreen .runtime-editor-pane,
+.runtime-fullscreen .runtime-output-pane {
+  height: auto;
+  min-height: 0;
+}
+
 .runtime-workspace button,
 .runtime-workspace select,
 .runtime-workspace a {
@@ -82,18 +111,6 @@
 .runtime-header-note {
   color: #868a96;
   font-size: 13px;
-}
-
-.runtime-sugar-link {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #9da1ac !important;
-  font-size: 12px;
-}
-
-.runtime-sugar-link:hover {
-  color: var(--runtime-primary) !important;
 }
 
 .runtime-intro {
@@ -200,12 +217,66 @@
   color: #9ea3af;
 }
 
+.runtime-theme-picker {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.runtime-theme-swatches {
+  padding: 4px 6px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  border: 1px solid #ffffff12;
+  border-radius: 10px;
+  background: #15171c;
+}
+
+.runtime-theme-swatch {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #ffffff1a;
+}
+
 .runtime-toolbar-controls [data-slot="native-select"] {
   height: 32px;
   border: 0;
   background: transparent;
   color: #aeb2bd;
   font-size: 14px;
+}
+
+.runtime-font-size {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #9297a3;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.runtime-font-size input {
+  width: 48px;
+  height: 29px;
+  padding: 0 5px;
+  border: 1px solid #3a3d45;
+  border-radius: 5px;
+  outline: 0;
+  background: #191b20;
+  color: #dce0e9;
+  font: 12px "Geist Mono", monospace;
+  text-align: center;
+}
+
+.runtime-font-size input:focus-visible {
+  border-color: var(--runtime-primary);
+  box-shadow: 0 0 0 2px #c5f2771c;
+}
+
+.runtime-font-size-unit {
+  color: #747984;
 }
 
 .runtime-toolbar-divider {
@@ -383,7 +454,7 @@
   margin: 0 !important;
   border: 0 !important;
   background: transparent !important;
-  font-size: 14px !important;
+  font-size: var(--runtime-font-size) !important;
 }
 
 .runtime-result > div:last-child {
@@ -563,11 +634,6 @@
     height: 68px;
   }
 
-  .runtime-sugar-link {
-    max-width: 125px;
-    font-size: 12px;
-  }
-
   .runtime-brand {
     font-size: 22px;
   }
@@ -614,8 +680,30 @@
     gap: 1px;
   }
 
-  .runtime-toolbar-controls > svg {
+  .runtime-theme-picker > svg {
     display: none;
+  }
+
+  .runtime-theme-swatches {
+    padding-inline: 4px;
+  }
+
+  .runtime-theme-swatch {
+    width: 6px;
+    height: 6px;
+  }
+
+  .runtime-font-size-label,
+  .runtime-font-size-unit {
+    display: none;
+  }
+
+  .runtime-font-size {
+    gap: 0;
+  }
+
+  .runtime-font-size input {
+    width: 42px;
   }
 
   .runtime-page-footer {
