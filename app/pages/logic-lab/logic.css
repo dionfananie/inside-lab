@@ -1,0 +1,484 @@
+.logic-app {
+  max-width: 1600px;
+  margin: auto;
+  color: var(--foreground);
+}
+.logic-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--border);
+}
+.logic-header nav {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.logic-header nav a {
+  text-decoration: none;
+  font-size: 0.875rem;
+  padding: 9px 14px;
+  border-radius: 6px;
+}
+.logic-header nav [aria-current] {
+  color: #255a43;
+  background: #edf3ed;
+  font-weight: 600;
+}
+.logic-heading {
+  padding: 26px 32px 22px;
+  border-bottom: 1px solid var(--border);
+}
+.logic-heading > span {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: #526a58;
+}
+.logic-heading h1 {
+  font-size: 2rem;
+  margin: 12px 0 8px;
+}
+.logic-heading p {
+  margin: 0;
+  color: #526357;
+  font-size: 1rem;
+}
+.logic-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 43fr) minmax(0, 57fr);
+}
+.logic-reference,
+.logic-playground {
+  min-width: 0;
+  padding: 28px 32px;
+}
+.logic-reference {
+  border-right: 1px solid var(--border);
+}
+.logic-app h2 {
+  font-size: 1.125rem;
+  margin-bottom: 12px;
+}
+.logic-app p {
+  font-size: 1rem;
+  line-height: 1.7;
+}
+.logic-app code {
+  overflow-wrap: anywhere;
+}
+.logic-atom {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) 95px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.logic-atom > label:first-child {
+  font-family: var(--font-geist-mono);
+  font-weight: 600;
+  color: #255a43;
+}
+.logic-app input {
+  font-size: 1rem;
+  min-height: 40px;
+}
+.logic-toggle {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.875rem;
+}
+.logic-formula {
+  background: #15241f;
+  color: #e4efe8;
+  padding: 18px;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+.logic-formula > span {
+  font-size: 0.75rem;
+  color: #b4caba;
+  letter-spacing: 0.06em;
+}
+.logic-formula > p {
+  margin: 12px 0 0;
+  font-family: var(--font-geist-mono);
+  font-size: 1.125rem;
+}
+.logic-outcome {
+  padding: 14px;
+  background: #edf3ed;
+  color: #255a43;
+  border: 1px solid #bfd2bf;
+  border-radius: 8px;
+}
+.logic-app h3 {
+  font-size: 1rem;
+  font-weight: 650;
+  margin: 0 0 10px;
+}
+.logic-basics {
+  margin-top: 16px;
+  font-size: 0.875rem;
+}
+.logic-basics summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #255a43;
+  font-weight: 600;
+}
+.logic-basics summary::after {
+  content: '+';
+}
+.logic-basics[open] summary::after {
+  content: '−';
+}
+.logic-basics-content {
+  padding: 18px 0 0;
+  max-width: 1050px;
+}
+.logic-legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.logic-legend p {
+  margin: 0;
+  padding: 12px;
+  background: #edf3ed;
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 6px 12px;
+  font-size: 0.875rem;
+}
+.logic-legend code {
+  font-size: 1.125rem;
+  grid-row: span 2;
+}
+.logic-section-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+  color: #526a58;
+}
+.logic-app .logic-help {
+  font-size: 0.875rem;
+  color: #526357;
+  margin: 0 0 18px;
+}
+.logic-catalog {
+  max-height: 740px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.logic-catalog [data-slot='table-header'] {
+  background: #f0f4ed;
+}
+.logic-catalog [data-state='selected'] {
+  background: #e5efdf;
+  box-shadow: inset 3px 0 #255a43;
+}
+.logic-catalog [data-slot='table-cell'] {
+  vertical-align: top;
+}
+.logic-catalog [data-slot='table-cell']:first-child {
+  width: 40px;
+  padding-top: 18px;
+  color: #526357;
+  font-family: var(--font-geist-mono);
+}
+.logic-rule-button {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: auto;
+  min-height: 34px;
+  padding: 4px 0;
+  font-weight: 600;
+  white-space: normal;
+  text-align: left;
+  color: #255a43;
+  gap: 12px;
+}
+.logic-rule-formula {
+  display: block;
+  font-size: 0.875rem;
+  white-space: normal;
+  line-height: 1.8;
+  padding: 2px 0 8px;
+}
+.logic-app [data-slot='table-caption'] {
+  padding: 12px;
+  margin: 0;
+  color: #526357;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  text-align: left;
+}
+.logic-app [data-slot='table-caption'] a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.logic-reference-note {
+  margin-top: 16px !important;
+}
+.logic-playground-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+#playground-title {
+  scroll-margin-top: 20px;
+}
+#playground-title:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 5px;
+}
+.logic-badge {
+  font-size: 0.75rem;
+  background: #edf3ed;
+  padding: 4px 8px;
+  color: #3e5b48;
+  border-radius: 4px;
+  white-space: nowrap;
+  margin-bottom: 12px;
+}
+.logic-scenario {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 12px;
+}
+.logic-scenario > label {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.logic-formula-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.logic-formula-head > span {
+  font-size: 0.75rem;
+  color: #b4caba;
+  letter-spacing: 0.06em;
+}
+.logic-formula-head button {
+  color: #d8e8db;
+  font-size: 0.875rem;
+}
+.logic-formula-head button:hover:not(:disabled) {
+  background: #30483a;
+}
+.logic-formula > label {
+  display: block;
+  font-size: 0.875rem;
+  margin-bottom: 8px;
+  color: #c4d9cb;
+}
+.logic-formula input {
+  background: #20382b;
+  color: #f1f7ed;
+  border-color: #526b5b;
+  font-family: var(--font-geist-mono);
+  font-size: 1rem;
+}
+.logic-formula input::selection {
+  background: #ff86d0;
+  color: #30102c;
+}
+.logic-turnstile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  font-size: 1.4rem;
+  color: #c2dfa3;
+}
+.logic-turnstile span {
+  font-size: 0.875rem;
+}
+.logic-symbols {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+}
+.logic-symbols button {
+  background: #294131;
+  color: #f1f7ed;
+  border-color: #526b5b;
+  min-width: 34px;
+  font-family: var(--font-geist-mono);
+  font-size: 1rem;
+}
+.logic-symbols button:hover {
+  background: #3a5943;
+}
+.logic-formula #formula-help {
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  margin: 12px 0 0;
+  color: #b4caba;
+}
+.logic-reading {
+  padding: 16px;
+  background: #f2f5ed;
+  border-left: 3px solid #83a468;
+  margin-bottom: 18px;
+}
+.logic-reading dl {
+  margin: 0;
+}
+.logic-reading dt {
+  font-size: 0.875rem;
+  font-weight: 650;
+  color: #42634b;
+  margin-bottom: 4px;
+}
+.logic-reading dd {
+  font-size: 1rem;
+  line-height: 1.75;
+  margin: 0 0 12px;
+  overflow-wrap: anywhere;
+}
+.logic-reading dd:last-child {
+  margin-bottom: 0;
+}
+.logic-outcome p {
+  font-size: 0.875rem;
+  margin: 8px 0 0;
+}
+.logic-outcome strong {
+  font-size: 1rem;
+}
+.logic-counterexample,
+.logic-error {
+  background: #fff0ea;
+  border: 1px solid #d4a18e;
+  color: #8b3523;
+}
+.logic-error {
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 0.875rem !important;
+}
+.logic-truth-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 24px 0 8px;
+}
+.logic-truth-heading h3 {
+  margin: 0;
+}
+.logic-truth-heading > span {
+  font-size: 0.875rem;
+  color: #526357;
+}
+.logic-truth-table {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.logic-truth-table [data-slot='table-header'] {
+  background: #f0f4ed;
+}
+.logic-truth-table [data-state='selected'] {
+  background: #fae0ef;
+  box-shadow: inset 3px 0 #a73175;
+}
+.logic-truth-table .counterexample-row {
+  color: #8b3523;
+  background: #fff0ea;
+}
+.truth-true {
+  color: #255a43;
+  font-weight: 650;
+}
+.truth-false {
+  color: #873c2b;
+  font-weight: 650;
+}
+.logic-next {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+.logic-next > span {
+  font-size: 0.875rem;
+  color: #526357;
+}
+.logic-next button {
+  font-size: 0.875rem;
+  white-space: normal;
+  height: auto;
+  min-height: 38px;
+}
+.logic-app [data-slot='table-cell'],
+.logic-app [data-slot='table-head'] {
+  font-size: 0.875rem;
+  padding: 10px;
+}
+@media (max-width: 900px) {
+  .logic-workspace {
+    grid-template-columns: 1fr;
+  }
+  .logic-playground {
+    order: 0;
+  }
+  .logic-reference {
+    order: 1;
+    border-right: 0;
+    border-top: 1px solid var(--border);
+  }
+  .logic-catalog {
+    max-height: none;
+  }
+}
+@media (max-width: 600px) {
+  .logic-header {
+    flex-wrap: wrap;
+    padding: 16px;
+    gap: 12px;
+  }
+  .logic-header nav a {
+    padding: 8px;
+  }
+  .logic-heading,
+  .logic-reference,
+  .logic-playground {
+    padding: 22px 18px;
+  }
+  .logic-atom {
+    grid-template-columns: 20px minmax(0, 1fr);
+  }
+  .logic-toggle {
+    grid-column: 2;
+  }
+  .logic-legend {
+    grid-template-columns: 1fr;
+  }
+  .logic-next,
+  .logic-scenario {
+    flex-wrap: wrap;
+  }
+}
