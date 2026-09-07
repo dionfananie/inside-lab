@@ -51,7 +51,7 @@ export function loader({ request }: Route.LoaderArgs) {
 
 const homeTitle = "insideLab — Belajar JavaScript & Logika secara Interaktif";
 const homeDescription =
-	"Belajar JavaScript dan logika dengan mencoba langsung. Jelajahi 4 bab, 105 latihan bertahap, tabel kebenaran, dan runtime JavaScript interaktif.";
+	"Belajar JavaScript dan logika dengan mencoba langsung. Jelajahi 5 bab, 129 latihan bertahap, tabel kebenaran, dan runtime JavaScript interaktif.";
 
 export const meta: Route.MetaFunction = ({ loaderData }) => [
 	{ title: homeTitle },

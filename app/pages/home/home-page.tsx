@@ -51,6 +51,8 @@ const chapterDescriptions: Record<string, string> = {
     "Pelajari parameter, return, scope, closure, rekursi, dan desain fungsi.",
   "objects-arrays":
     "Olah kumpulan data melalui array, objek, destructuring, spread, dan JSON.",
+  "higher-order-functions":
+    "Gunakan fungsi sebagai nilai dan olah data dengan filter, map, reduce, serta komposisi.",
 };
 
 const stageDescriptions = {

@@ -10,6 +10,7 @@ export function loader({ request }: Route.LoaderArgs) {
 	type Entry = { path: string; priority: string; changefreq: string };
 	const entries: Entry[] = [
 		{ path: "/", priority: "1.0", changefreq: "weekly" },
+		{ path: "/lab", priority: "0.9", changefreq: "weekly" },
 		{ path: "/play", priority: "0.6", changefreq: "monthly" },
 		{
 			path: "/computational-logic/proportional-logic",
