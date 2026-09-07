@@ -14,8 +14,10 @@ import {
   Maximize2,
   Minimize2,
   Palette,
+  Redo2,
   RotateCcw,
   Square,
+  Undo2,
   Terminal,
   Zap,
 } from "lucide-react";
@@ -102,6 +104,13 @@ type StoredSettings = {
   fontSize: number;
 };
 
+type EditorHistory = {
+  past: string[];
+  future: string[];
+};
+
+const maximumHistoryEntries = 100;
+
 const fallbackSettings: StoredSettings = {
   theme: "Taffy",
   fontSize: defaultFontSize,
@@ -132,6 +141,10 @@ function loadSettings(): StoredSettings {
 
 export default function RuntimeJsPage() {
   const [source, setSource] = useState(initialSource);
+  const [history, setHistory] = useState<EditorHistory>({
+    past: [],
+    future: [],
+  });
   const [themeName, setThemeName] = useState<ThemeName>(fallbackSettings.theme);
   const [entries, setEntries] = useState<RuntimeEntry[]>([]);
   const [status, setStatus] = useState("Starting");
@@ -252,15 +265,54 @@ export default function RuntimeJsPage() {
     });
   }
 
+  function updateSource(nextSource: string) {
+    if (nextSource === source) return;
+    setHistory((current) => ({
+      past: [...current.past.slice(-(maximumHistoryEntries - 1)), source],
+      future: [],
+    }));
+    setSource(nextSource);
+  }
+
+  function undoSource() {
+    const previousSource = history.past.at(-1);
+    if (previousSource === undefined) return;
+    setHistory({
+      past: history.past.slice(0, -1),
+      future: [source, ...history.future].slice(0, maximumHistoryEntries),
+    });
+    setSource(previousSource);
+    requestAnimationFrame(() => textareaRef.current?.focus());
+  }
+
+  function redoSource() {
+    const nextSource = history.future[0];
+    if (nextSource === undefined) return;
+    setHistory({
+      past: [...history.past.slice(-(maximumHistoryEntries - 1)), source],
+      future: history.future.slice(1),
+    });
+    setSource(nextSource);
+    requestAnimationFrame(() => textareaRef.current?.focus());
+  }
+
   function handleEditorKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
-    if (
-      event.nativeEvent.isComposing ||
-      event.ctrlKey ||
-      event.metaKey ||
-      event.altKey
-    ) {
+    if (event.nativeEvent.isComposing) return;
+
+    const key = event.key.toLowerCase();
+    const commandKey = event.ctrlKey || event.metaKey;
+    if (commandKey && key === "z") {
+      event.preventDefault();
+      if (event.shiftKey) redoSource();
+      else undoSource();
       return;
     }
+    if (event.ctrlKey && key === "y") {
+      event.preventDefault();
+      redoSource();
+      return;
+    }
+    if (commandKey || event.altKey) return;
 
     const textarea = event.currentTarget;
     const start = textarea.selectionStart;
@@ -284,20 +336,20 @@ export default function RuntimeJsPage() {
 
       if (previousChar === "{" && closerAdjacent) {
         const innerIndent = leading + indentUnit;
-        setSource(`${before}\n${innerIndent}\n${leading}${after}`);
+        updateSource(`${before}\n${innerIndent}\n${leading}${after}`);
         setEditorSelection(before.length + 1 + innerIndent.length);
         return;
       }
 
       const nextIndent = openedHere ? leading + indentUnit : leading;
-      setSource(`${before}\n${nextIndent}${after}`);
+      updateSource(`${before}\n${nextIndent}${after}`);
       setEditorSelection(before.length + 1 + nextIndent.length);
       return;
     }
 
     if (closing) {
       event.preventDefault();
-      setSource(
+      updateSource(
         `${value.slice(0, start)}${event.key}${value.slice(start, end)}${closing}${value.slice(end)}`,
       );
       setEditorSelection(start + 1, end + 1);
@@ -318,14 +370,14 @@ export default function RuntimeJsPage() {
       const opening = value[start - 1] as keyof typeof closingPair;
       if (closingPair[opening] === value[start]) {
         event.preventDefault();
-        setSource(`${value.slice(0, start - 1)}${value.slice(start + 1)}`);
+        updateSource(`${value.slice(0, start - 1)}${value.slice(start + 1)}`);
         setEditorSelection(start - 1);
       }
     }
   }
 
   function restoreStarter() {
-    setSource(initialSource);
+    updateSource(initialSource);
     setPaused(false);
     setRevision((current) => current + 1);
   }
@@ -447,6 +499,28 @@ export default function RuntimeJsPage() {
             <span className="runtime-toolbar-divider" />
             <Button
               variant="ghost"
+              className="runtime-tool-button runtime-history-button"
+              onClick={undoSource}
+              disabled={history.past.length === 0}
+              title="Undo (Ctrl/Cmd+Z)"
+              aria-label="Undo code change"
+              aria-keyshortcuts="Control+Z Meta+Z"
+            >
+              <Undo2 size={16} />
+            </Button>
+            <Button
+              variant="ghost"
+              className="runtime-tool-button runtime-history-button"
+              onClick={redoSource}
+              disabled={history.future.length === 0}
+              title="Redo (Ctrl+Y or Ctrl/Cmd+Shift+Z)"
+              aria-label="Redo code change"
+              aria-keyshortcuts="Control+Y Control+Shift+Z Meta+Shift+Z"
+            >
+              <Redo2 size={16} />
+            </Button>
+            <Button
+              variant="ghost"
               className="runtime-tool-button"
               onClick={() => setFullscreen((current) => !current)}
               title={fullscreenLabel}
@@ -486,7 +560,7 @@ export default function RuntimeJsPage() {
                   } as CSSProperties
                 }
                 value={source}
-                onChange={setSource}
+                onChange={updateSource}
                 lang="javascript"
                 controls={false}
                 lineNumbers

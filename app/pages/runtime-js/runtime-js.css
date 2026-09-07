@@ -298,6 +298,11 @@
   background: #ffffff0b !important;
 }
 
+.runtime-tool-button:disabled {
+  opacity: 0.32;
+  color: #7a7f8a !important;
+}
+
 .runtime-panes {
   min-height: 0;
   flex: 1;
@@ -694,13 +699,17 @@
     display: none;
   }
 
-  .runtime-theme-swatches {
-    padding-inline: 4px;
+  .runtime-theme-swatches,
+  .runtime-file-dot {
+    display: none;
   }
 
-  .runtime-theme-swatch {
-    width: 6px;
-    height: 6px;
+  .runtime-toolbar-controls [data-slot="native-select"] {
+    max-width: 92px;
+  }
+
+  .runtime-tool-button {
+    width: 26px;
   }
 
   .runtime-font-size-label,
