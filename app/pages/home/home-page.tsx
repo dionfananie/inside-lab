@@ -53,6 +53,16 @@ const chapterDescriptions: Record<string, string> = {
     "Olah kumpulan data melalui array, objek, destructuring, spread, dan JSON.",
   "higher-order-functions":
     "Gunakan fungsi sebagai nilai dan olah data dengan filter, map, reduce, serta komposisi.",
+  "object-oriented-programming":
+    "Pahami method, prototype, class, enkapsulasi, iterator, dan pewarisan di JavaScript.",
+  "bugs-errors":
+    "Temukan bug lebih cepat dengan validasi, testing, debugging, exception, dan assertion.",
+  "regular-expressions":
+    "Kenali, ekstrak, validasi, dan ubah pola teks menggunakan regular expression.",
+  modules:
+    "Susun program menjadi modul dengan interface, dependensi, package, dan desain API yang jelas.",
+  "asynchronous-programming":
+    "Kelola pekerjaan yang menunggu dengan callback, Promise, async/await, dan event loop.",
 };
 
 const stageDescriptions = {
@@ -302,11 +312,11 @@ export default function HomePage({
         <div className="home-section-heading">
           <div>
             <div className="home-section-number">02 · JALUR JAVASCRIPT</div>
-            <h2 id="curriculum-title">Dari nilai dasar sampai struktur data.</h2>
+            <h2 id="curriculum-title">Dari nilai dasar sampai pemrograman asinkron.</h2>
           </div>
           <p>
-            Empat bab yang saling membangun, dengan tiga jenis latihan di setiap
-            bagian.
+            {chapters.length} bab yang saling membangun, dengan tiga jenis latihan
+            di setiap bagian.
           </p>
         </div>
 

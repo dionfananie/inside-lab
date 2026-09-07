@@ -50,18 +50,19 @@ export function loader({ request }: Route.LoaderArgs) {
 }
 
 const homeTitle = "insideLab — Belajar JavaScript & Logika secara Interaktif";
-const homeDescription =
-	"Belajar JavaScript dan logika dengan mencoba langsung. Jelajahi 5 bab, 129 latihan bertahap, tabel kebenaran, dan runtime JavaScript interaktif.";
 
-export const meta: Route.MetaFunction = ({ loaderData }) => [
-	{ title: homeTitle },
-	{ name: "description", content: homeDescription },
-	...socialMeta({
-		canonical: loaderData.canonical,
-		title: homeTitle,
-		description: homeDescription,
-	}),
-];
+export const meta: Route.MetaFunction = ({ loaderData }) => {
+	const description = `Belajar JavaScript dan logika dengan mencoba langsung. Jelajahi ${loaderData.chapters.length} bab, ${loaderData.totalExercises} latihan bertahap, tabel kebenaran, dan runtime JavaScript interaktif.`;
+	return [
+		{ title: homeTitle },
+		{ name: "description", content: description },
+		...socialMeta({
+			canonical: loaderData.canonical,
+			title: homeTitle,
+			description,
+		}),
+	];
+};
 
 export default function Home({ loaderData }: Route.ComponentProps) {
 	return <HomePage {...loaderData} />;

@@ -393,6 +393,16 @@
   min-height: 100%;
 }
 
+.runtime-code-editor,
+.runtime-code-editor [data-sh-code] {
+  --sh-font-size: var(--runtime-font-size) !important;
+}
+
+.runtime-code-editor code,
+.runtime-code-editor textarea {
+  font-size: var(--runtime-font-size) !important;
+}
+
 .runtime-code-editor [data-sh-code] {
   position: relative;
   z-index: 1;

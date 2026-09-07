@@ -102,47 +102,48 @@ type StoredSettings = {
   fontSize: number;
 };
 
+const fallbackSettings: StoredSettings = {
+  theme: "Taffy",
+  fontSize: defaultFontSize,
+};
+
 function loadSettings(): StoredSettings {
-  const fallback: StoredSettings = {
-    theme: "Taffy",
-    fontSize: defaultFontSize,
-  };
-  if (typeof window === "undefined") return fallback;
+  if (typeof window === "undefined") return fallbackSettings;
   try {
     const raw = window.localStorage.getItem(settingsKey);
-    if (!raw) return fallback;
+    if (!raw) return fallbackSettings;
     const parsed = JSON.parse(raw) as Partial<StoredSettings>;
     return {
       theme: themeNames.includes(parsed.theme as ThemeName)
         ? (parsed.theme as ThemeName)
-        : fallback.theme,
+        : fallbackSettings.theme,
       fontSize:
         Number.isFinite(parsed.fontSize) && typeof parsed.fontSize === "number"
           ? Math.min(
               maximumFontSize,
               Math.max(minimumFontSize, Math.round(parsed.fontSize)),
             )
-          : fallback.fontSize,
+          : fallbackSettings.fontSize,
     };
   } catch {
-    return fallback;
+    return fallbackSettings;
   }
 }
 
 export default function RuntimeJsPage() {
-  const initialSettings = useRef<StoredSettings>(loadSettings()).current;
   const [source, setSource] = useState(initialSource);
-  const [themeName, setThemeName] = useState<ThemeName>(initialSettings.theme);
+  const [themeName, setThemeName] = useState<ThemeName>(fallbackSettings.theme);
   const [entries, setEntries] = useState<RuntimeEntry[]>([]);
   const [status, setStatus] = useState("Starting");
   const [elapsed, setElapsed] = useState(0);
   const [revision, setRevision] = useState(0);
   const [paused, setPaused] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
-  const [fontSize, setFontSize] = useState(initialSettings.fontSize);
+  const [fontSize, setFontSize] = useState(fallbackSettings.fontSize);
   const [fontSizeInput, setFontSizeInput] = useState(
-    String(initialSettings.fontSize),
+    String(fallbackSettings.fontSize),
   );
+  const [settingsReady, setSettingsReady] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const theme = themes[themeName];
@@ -160,14 +161,23 @@ export default function RuntimeJsPage() {
   const lineHeight = Math.round(fontSize * 1.5);
   const editorContentHeight = lineCount * lineHeight + 36;
 
+  useLayoutEffect(() => {
+    const stored = loadSettings();
+    setThemeName(stored.theme);
+    setFontSize(stored.fontSize);
+    setFontSizeInput(String(stored.fontSize));
+    setSettingsReady(true);
+  }, []);
+
   useEffect(() => {
+    if (!settingsReady) return;
     try {
       window.localStorage.setItem(
         settingsKey,
         JSON.stringify({ theme: themeName, fontSize }),
       );
     } catch {}
-  }, [themeName, fontSize]);
+  }, [settingsReady, themeName, fontSize]);
 
   useLayoutEffect(() => {
     const editor = editorRef.current;

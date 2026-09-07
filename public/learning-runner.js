@@ -70,7 +70,7 @@ function equal(a, b) {
     keys.every((k) => Object.hasOwn(b, k) && equal(a[k], b[k]))
   );
 }
-function evaluate(code, mode, probe, inputs, args = []) {
+async function evaluate(code, mode, probe, inputs, args = []) {
   const logs = [];
   const log = (...values) => {
     if (logs.length < 60)
@@ -95,41 +95,45 @@ function evaluate(code, mode, probe, inputs, args = []) {
       : mode === 'function'
         ? code + '\n;return (' + probe + ')(...__args);'
         : code + '\n;return ' + (probe ? '(' + probe + ')' : 'undefined') + ';';
-  const value = new Function(
+  const pending = new Function(
     'console',
     '__args',
     ...Object.keys(inputs),
     '"use strict";\n' + suffix,
   )(capture, args, ...Object.values(inputs));
+  const value = await pending;
+  // Give queued microtasks and zero-delay callbacks a chance to write console output.
+  if (mode === 'console') await new Promise((resolve) => setTimeout(resolve, 0));
   return { value: mode === 'console' ? logs.join('\n') : value, logs };
 }
-self.onmessage = ({ data }) => {
+self.onmessage = async ({ data }) => {
   const { id, code, mode, probe, tests, action } = data;
   try {
     if (action === 'run') {
-      const r = evaluate(code, mode, probe, tests[0].inputs, tests[0].args);
+      const r = await evaluate(code, mode, probe, tests[0].inputs, tests[0].args);
       send({ id, logs: r.logs, value: format(r.value) });
     } else {
-      const results = tests.map((test) => {
+      const results = [];
+      for (const test of tests) {
         try {
-          const r = evaluate(code, mode, probe, test.inputs, test.args);
-          return {
+          const r = await evaluate(code, mode, probe, test.inputs, test.args);
+          results.push({
             name: test.name,
             pass: equal(r.value, test.expected),
             input: format(test.args?.length ? test.args : test.inputs),
             expected: format(test.expected),
             received: format(r.value),
-          };
+          });
         } catch (e) {
-          return {
+          results.push({
             name: test.name,
             pass: false,
             input: format(test.inputs),
             expected: format(test.expected),
             received: explainError(e),
-          };
+          });
         }
-      });
+      }
       send({ id, results });
     }
   } catch (e) {

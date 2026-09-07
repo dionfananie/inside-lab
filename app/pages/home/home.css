@@ -809,7 +809,7 @@
 
 .home-roadmap {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   border-top: 1px solid #d4ddd2;
   border-bottom: 1px solid #d4ddd2;
 }
@@ -824,8 +824,16 @@
   transition: background 220ms ease, transform 220ms ease, box-shadow 220ms ease;
 }
 
-.home-chapter-card:first-child {
+.home-chapter-card:nth-child(5n + 1) {
   border-left: 0;
+}
+
+.home-chapter-card:nth-child(n + 6) {
+  border-top: 1px solid #d4ddd2;
+}
+
+.home-chapter-card:nth-child(5n) .home-chapter-index i {
+  display: none;
 }
 
 .home-chapter-card:hover,
@@ -1373,7 +1381,12 @@
     border-left: 0;
   }
 
-  .home-chapter-card:nth-child(2) .home-chapter-index i {
+  .home-chapter-card:nth-child(odd) .home-chapter-index i {
+    display: block;
+  }
+
+  .home-chapter-card:nth-child(even) .home-chapter-index i,
+  .home-chapter-card:last-child .home-chapter-index i {
     display: none;
   }
 
@@ -1603,7 +1616,8 @@
     border-left: 0;
   }
 
-  .home-chapter-index i {
+  .home-chapter-index i,
+  .home-chapter-card:nth-child(odd) .home-chapter-index i {
     display: none;
   }
 
