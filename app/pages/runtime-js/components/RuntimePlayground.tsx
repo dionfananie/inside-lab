@@ -1,4 +1,4 @@
-import type { RuntimeJsModel } from "../hook";
+import type { RuntimeJsModel } from "../useRuntimeJs";
 import RuntimeEditorPane from "./RuntimeEditorPane";
 import RuntimeOutputPane from "./RuntimeOutputPane";
 import RuntimeStatusBar from "./RuntimeStatusBar";

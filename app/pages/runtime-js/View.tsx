@@ -4,7 +4,7 @@ import RuntimeHeader from "./components/RuntimeHeader";
 import RuntimeIntro from "./components/RuntimeIntro";
 import RuntimePageFooter from "./components/RuntimePageFooter";
 import RuntimePlayground from "./components/RuntimePlayground";
-import useRuntimeJs from "./hook";
+import useRuntimeJs from "./useRuntimeJs";
 
 export default function RuntimeJsPage() {
   const runtime = useRuntimeJs();

@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import { Editor } from "@sugar-high/react";
 import { Braces } from "lucide-react";
 
-import type { RuntimeJsModel } from "../hook";
+import type { RuntimeJsModel } from "../useRuntimeJs";
 
 type RuntimeEditorPaneProps = {
   runtime: RuntimeJsModel;

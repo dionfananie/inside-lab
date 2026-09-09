@@ -1,7 +1,7 @@
 import { Code } from "@sugar-high/react";
 import { Terminal } from "lucide-react";
 
-import type { RuntimeJsModel } from "../hook";
+import type { RuntimeJsModel } from "../useRuntimeJs";
 
 type RuntimeOutputPaneProps = {
   runtime: RuntimeJsModel;

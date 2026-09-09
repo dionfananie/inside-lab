@@ -14,7 +14,7 @@ import {
 } from "~/components/ui/native-select";
 
 import { maximumFontSize, minimumFontSize, themes } from "../data";
-import type { RuntimeJsModel } from "../hook";
+import type { RuntimeJsModel } from "../useRuntimeJs";
 import type { ThemeName } from "../types";
 
 type RuntimeToolbarProps = {

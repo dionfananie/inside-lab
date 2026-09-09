@@ -2,7 +2,7 @@ import { Square } from "lucide-react";
 
 import { Button } from "~/components/ui/button";
 
-import type { RuntimeJsModel } from "../hook";
+import type { RuntimeJsModel } from "../useRuntimeJs";
 
 type RuntimeStatusBarProps = {
   runtime: RuntimeJsModel;
