@@ -1,7 +1,7 @@
 import type { Route } from "./+types/lab";
 
 import { canonicalOf, socialMeta } from "~/lib/seo";
-import LabPage from "~/pages/lab/lab-page";
+import LabPage from "~/pages/lab";
 import "~/pages/lab/lab.css";
 
 export function loader({ request }: Route.LoaderArgs) {

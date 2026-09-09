@@ -1,7 +1,7 @@
 import type { Route } from "./+types/play";
 
 import { canonicalOf, socialMeta } from "~/lib/seo";
-import RuntimeJsPage from "~/pages/runtime-js/runtime-js-page";
+import RuntimeJsPage from "~/pages/runtime-js";
 import "~/pages/runtime-js/runtime-js.css";
 
 export function loader({ request }: Route.LoaderArgs) {

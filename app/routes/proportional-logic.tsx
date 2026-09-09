@@ -1,7 +1,7 @@
 import type { Route } from "./+types/proportional-logic";
 
 import { canonicalOf, socialMeta } from "~/lib/seo";
-import LogicLab from "~/pages/logic-lab/logic-lab";
+import LogicLab from "~/pages/logic-lab";
 import "~/pages/logic-lab/logic.css";
 
 export function loader({ request }: Route.LoaderArgs) {

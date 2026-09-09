@@ -5,7 +5,7 @@ import { canonicalOf, originOf, socialMeta } from "~/lib/seo";
 import HomePage, {
 	type HomeChapter,
 	type HomeExercise,
-} from "~/pages/home/home-page";
+} from "~/pages/home";
 import "~/pages/home/home.css";
 import { rules } from "~/pages/logic-lab/rules";
 

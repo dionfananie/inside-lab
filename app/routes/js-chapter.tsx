@@ -3,7 +3,7 @@ import { redirect } from "react-router";
 
 import { chapters } from "~/content/curriculum";
 import { canonicalOf, socialMeta } from "~/lib/seo";
-import LearningPage from "~/pages/js-learning/learning-page";
+import LearningPage from "~/pages/js-learning";
 
 export function loader({ request, params }: Route.LoaderArgs) {
 	const chapter = chapters.find((item) => item.id === params.chapterId);
