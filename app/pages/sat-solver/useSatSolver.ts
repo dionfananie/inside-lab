@@ -45,8 +45,8 @@ export default function useSatSolver() {
     const sentences = splitBulkSource(source);
     if (sentences.length === 0) return;
     const startIndex = variableCount(clauses);
-    const newClauses: Clause[] = sentences.map((sentence) => {
-      const symbol = sentenceToClause(sentence, startIndex + newClauses.length);
+    const newClauses: Clause[] = sentences.map((sentence, index) => {
+      const symbol = sentenceToClause(sentence, startIndex + index);
       return { id: nextId(), raw: symbol };
     });
     setClauses((prev) => [...prev, ...newClauses]);

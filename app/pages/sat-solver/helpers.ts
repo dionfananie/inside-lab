@@ -20,6 +20,20 @@ const CONNECTORS: Array<[RegExp, string]> = [
   [/\btidak\b|\bbukan\b|\bbelum\b/gi, '¬'],
 ];
 
+const STOP_WORDS = new Set([
+  'saya',
+  'aku',
+  'kamu',
+  'dia',
+  'kami',
+  'kita',
+  'mereka',
+  'ini',
+  'itu',
+  'adalah',
+  'akan',
+]);
+
 const ATOM_HEURISTIC = 1.2;
 
 /**
@@ -54,8 +68,10 @@ export function sentenceToClause(sentence: string, startIndex: number): string {
       continue;
     }
     // normalisasi token non-operator → variabel
-    const key = token.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
-    if (!key) continue;
+    const key = token
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}]/gu, '');
+    if (!key || STOP_WORDS.has(key)) continue;
     let variable = variables.get(key);
     if (!variable) {
       const index = startIndex + variables.size;

@@ -1,9 +1,7 @@
 export type Variable = 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x' | 'y' | 'z';
 export type Values = Record<string, boolean>;
 
-export const SAT_VARIABLES: string[] = [
-  'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-];
+export const SAT_VARIABLES: string[] = 'abcdefghijklmnopqrstuvwxyz'.split('');
 
 export type SatExpression =
   | { kind: 'atom'; value: string }
