@@ -1,0 +1,255 @@
+.sat-app {
+  max-width: 1600px;
+  margin: auto;
+  color: var(--foreground);
+}
+
+.sat-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 55fr) minmax(0, 45fr);
+}
+
+.sat-input-area {
+  min-width: 0;
+  padding: 28px 32px;
+  border-right: 1px solid var(--border);
+}
+
+.sat-clause-area {
+  min-width: 0;
+  padding: 28px 32px;
+}
+
+.sat-panel {
+  margin-bottom: 28px;
+}
+
+.sat-app h2 {
+  font-size: 1.125rem;
+  margin: 0 0 12px;
+}
+
+.sat-app p {
+  font-size: 1rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.sat-app .logic-help {
+  font-size: 0.875rem;
+  color: #526357;
+  margin: 0 0 16px;
+}
+
+.sat-app kbd {
+  font-family: var(--font-geist-mono);
+  font-size: 0.8rem;
+  background: #edf3ed;
+  border: 1px solid #cfdccf;
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+.sat-textarea {
+  width: 100%;
+  min-height: 96px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--background, #fff);
+  color: var(--foreground);
+  font-size: 1rem;
+  line-height: 1.6;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.sat-textarea:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.sat-input-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.sat-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: #526357;
+}
+
+.sat-list-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.sat-empty {
+  font-size: 0.9rem;
+  color: #526357;
+}
+
+.sat-clauses {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sat-clause {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) 36px;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fbfdfb;
+}
+
+.sat-clause-index {
+  font-family: var(--font-geist-mono);
+  font-size: 0.8rem;
+  color: #526a58;
+}
+
+.sat-clause-view {
+  font-family: var(--font-geist-mono);
+  font-size: 1rem;
+  text-align: left;
+  color: #255a43;
+  padding: 4px 0;
+  border: none;
+  background: none;
+  cursor: text;
+  overflow-wrap: anywhere;
+}
+
+.sat-clause-view:hover {
+  text-decoration: underline;
+  text-decoration-color: #b9cfba;
+}
+
+.sat-clause-input {
+  font-family: var(--font-geist-mono);
+  font-size: 1rem;
+  padding: 6px 8px;
+  border: 1px solid #83a468;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--foreground);
+}
+
+.sat-clause-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: #873c2b;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  cursor: pointer;
+}
+
+.sat-clause:hover .sat-clause-remove,
+.sat-clause-remove:focus-visible {
+  opacity: 1;
+}
+
+.sat-clause-remove:hover {
+  background: #fff0ea;
+}
+
+.sat-result {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid;
+}
+
+.sat-result-sat {
+  background: #edf3ed;
+  border-color: #bfd2bf;
+  color: #255a43;
+}
+
+.sat-result-unsat {
+  background: #fff0ea;
+  border-color: #d4a18e;
+  color: #8b3523;
+}
+
+.sat-result-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 650;
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.sat-result p {
+  font-size: 0.9rem;
+  margin: 0 0 8px;
+}
+
+.sat-assignment {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 4px;
+}
+
+.sat-assignment-item {
+  font-family: var(--font-geist-mono);
+  font-size: 0.85rem;
+  background: #fff;
+  border: 1px solid #bfd2bf;
+  border-radius: 6px;
+  padding: 4px 10px;
+  color: #255a43;
+}
+
+.sat-note {
+  color: #526357;
+}
+
+.sat-code {
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-family: var(--font-geist-mono);
+}
+
+@media (max-width: 900px) {
+  .sat-layout {
+    grid-template-columns: 1fr;
+  }
+  .sat-input-area {
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+}
+
+@media (max-width: 600px) {
+  .sat-input-area,
+  .sat-clause-area {
+    padding: 22px 18px;
+  }
+}

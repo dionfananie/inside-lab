@@ -12,4 +12,5 @@ export default [
 		"computational-logic/proportional-logic",
 		"routes/proportional-logic.tsx",
 	),
+	route("computational-logic/sat-solver", "routes/sat-solver.tsx"),
 ] satisfies RouteConfig;
