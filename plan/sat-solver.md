@@ -294,24 +294,23 @@ Mengikuti bahasa visual `insideLab` (logic-lab):
 
 ---
 
-## 9. Pertanyaan terbuka untuk user
+## 9. Keputusan format DIMACS CNF
 
-Sebelum implementasi, mohon konfirmasi:
-
-1. **Format output klausa**: tampil sebagai `& | ! -> <->` ASCII, atau simbol
-   cantik `∧ ∨ ¬ → ↔` seperti halaman proposisional yang sudah ada?
-2. **Batas variabel**: cukup sampai `z` (26), atau perlu lebih (penamaan `x1,x2`)?
-3. **Konversi kalimat**: apakah heuristik sederhana cukup untuk POC, atau kamu
-   sudah punya aturan konversi spesifik yang ingin ditetapkan?
-4. **Enter pada multi-baris**: apakah kalimat bisa memuat beberapa pernyataan
-   sekaligus (dipisah `;` atau baris baru), atau satu kalimat = satu klausa saja?
+- Format utama adalah DIMACS CNF numerik, bukan formula simbolik.
+- Header otomatis: `p cnf <jumlah-variable> <jumlah-klausa>`.
+- Setiap klausa berisi literal angka dan diakhiri `0`, misalnya `1 -3 0`.
+- Angka positif berarti literal biasa; angka negatif berarti negasi.
+- Batas editor: variabel `1..26`; jumlah klausa mengikuti baris aktif.
+- Input utama mendukung satu klausa atau bulk dengan baris baru/titik koma.
+- Editor inline dan kontrol hapus per baris tetap tersedia.
+- Input kalimat biasa tetap tersedia sebagai konverter POC ke klausa angka.
 
 ---
 
-## 10. Langkah eksekusi (setelah plan disetujui)
+## 10. Langkah eksekusi
 
-1. Perluas `app/lib/propositional-logic.ts` atau buat `app/lib/sat.ts` (parser token bebas + CNF + DPLL).
-2. Bangun `app/pages/sat-solver/` (hook + komponen) mengikuti pola `logic-lab`.
-3. Tambah route `computational-logic/sat-solver`.
-4. `npm run typecheck` + `npm run build` + `git diff --check`.
-5. Tampilkan pratinjau (screenshot/deskripsi) dan minta konfirmasi sebelum deploy.
+1. Parser/validator DIMACS CNF client-side.
+2. Editor klausa numerik dengan counter otomatis dan preview header.
+3. Solver SAT/UNSAT client-side + contoh assignment.
+4. Konverter kalimat sederhana sebagai fitur pembelajaran tambahan.
+5. `npm run typecheck` + `npm run build` + `git diff --check`.

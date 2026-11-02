@@ -1,11 +1,12 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { parseSat } from '~/lib/sat';
+import { formatDimacs, parseDimacsClauses } from './dimacs';
 import type { SatResult } from './solver';
 import { solveSat } from './solver';
 import {
   nextId,
-  sentenceToClause,
+  sentenceToSymbolic,
   splitBulkSource,
+  symbolicToNumericClauses,
   variableCount,
   type Clause,
 } from './helpers';
@@ -13,99 +14,111 @@ import {
 export default function useSatSolver() {
   const [clauses, setClauses] = useState<Clause[]>([]);
   const [source, setSource] = useState('');
+  const [numericSource, setNumericSource] = useState('');
   const [result, setResult] = useState<SatResult>({ status: 'idle' });
   const [announcement, setAnnouncement] = useState('');
   const sourceInput = useRef<HTMLTextAreaElement>(null);
+  const numericSourceInput = useRef<HTMLTextAreaElement>(null);
 
-  const parsing = useMemo(() => {
-    let error = '';
-    const parsed = clauses.map((c) => {
-      try {
-        return { ...c, expression: parseSat(c.raw) };
-      } catch (e) {
-        if (!error)
-          error = e instanceof Error ? e.message : 'Rumus belum dapat dibaca.';
-        return { ...c, expression: null };
-      }
-    });
-    return {
-      error,
-      valid: parsed.filter((p) => p.expression !== null) as {
-        id: string;
-        raw: string;
-        expression: ReturnType<typeof parseSat>;
-      }[],
-    };
-  }, [clauses]);
-
-  const variableTotal = variableCount(clauses);
+  const validation = useMemo(() => parseDimacsClauses(clauses), [clauses]);
+  const problem = validation.problem;
+  const variableTotal = problem?.variables ?? variableCount(clauses);
   const statementTotal = clauses.length;
+  const dimacsText = problem ? formatDimacs(problem) : '';
+
+  const resetResult = () => setResult({ status: 'idle' });
+
+  function appendRows(rows: Clause[]) {
+    if (rows.length === 0) return;
+    setClauses((prev) => [...prev, ...rows]);
+    resetResult();
+    setAnnouncement(`${rows.length} klausa ditambahkan.`);
+  }
 
   function addFromSource() {
     const sentences = splitBulkSource(source);
     if (sentences.length === 0) return;
-    const startIndex = variableCount(clauses);
-    const newClauses: Clause[] = sentences.map((sentence, index) => {
-      const symbol = sentenceToClause(sentence, startIndex + index);
-      return { id: nextId(), raw: symbol };
-    });
-    setClauses((prev) => [...prev, ...newClauses]);
-    setSource('');
-    setResult({ status: 'idle' });
-    setAnnouncement(`${newClauses.length} pernyataan ditambahkan.`);
-    requestAnimationFrame(() => sourceInput.current?.focus());
+
+    const rows: Clause[] = [];
+    try {
+      sentences.forEach((sentence, sentenceIndex) => {
+        const symbolic = sentenceToSymbolic(sentence, variableCount(clauses) + sentenceIndex);
+        const numericClauses = symbolicToNumericClauses(symbolic);
+        numericClauses.forEach((literals) => {
+          rows.push({ id: nextId(), raw: `${literals.join(' ')} 0` });
+        });
+      });
+      appendRows(rows);
+      setSource('');
+      requestAnimationFrame(() => sourceInput.current?.focus());
+    } catch (error) {
+      setAnnouncement(error instanceof Error ? error.message : 'Kalimat belum dapat diubah.');
+    }
+  }
+
+  function addFromNumericSource() {
+    const values = numericSource
+      .split(/[\n;]/)
+      .map((value) => value.trim())
+      .filter(Boolean);
+    if (values.length === 0) return;
+    appendRows(values.map((raw) => ({ id: nextId(), raw })));
+    setNumericSource('');
+    requestAnimationFrame(() => numericSourceInput.current?.focus());
   }
 
   const addClause = useCallback(() => addFromSource(), [source, clauses]);
+  const addNumericClause = useCallback(
+    () => addFromNumericSource(),
+    [numericSource],
+  );
 
   function updateClause(id: string, raw: string) {
-    setClauses((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, raw } : c)),
-    );
-    setResult({ status: 'idle' });
+    setClauses((prev) => prev.map((c) => (c.id === id ? { ...c, raw } : c)));
+    resetResult();
   }
 
   function removeClause(id: string) {
     setClauses((prev) => prev.filter((c) => c.id !== id));
-    setResult({ status: 'idle' });
+    resetResult();
   }
 
   function run() {
-    if (parsing.error) {
-      setResult({ status: 'error', message: parsing.error });
-      setAnnouncement('Periksa kembali rumus yang ditandai.');
+    if (validation.errors.length > 0 || !problem) {
+      setResult({ status: 'error', message: validation.errors[0] ?? 'Masukkan klausa terlebih dahulu.' });
+      setAnnouncement('Periksa format DIMACS pada daftar klausa.');
       return;
     }
-    if (parsing.valid.length === 0) {
-      setResult({ status: 'idle' });
-      return;
-    }
-    const outcome = solveSat(
-      parsing.valid.map((c) => ({ clause: c.raw, expression: c.expression })),
-    );
+    const outcome = solveSat(problem);
     setResult(outcome);
     setAnnouncement(
       outcome.status === 'sat'
-        ? 'Rumus dapat dipenuhi.'
+        ? 'Formula SAT dapat dipenuhi.'
         : outcome.status === 'unsat'
-          ? 'Rumus tidak dapat dipenuhi.'
+          ? 'Formula UNSAT tidak dapat dipenuhi.'
           : 'Pemeriksaan selesai.',
     );
   }
 
   return {
     addClause,
+    addNumericClause,
     announcement,
     clauses,
-    parsing,
+    dimacsText,
+    numericSource,
+    numericSourceInput,
+    problem,
     removeClause,
     result,
     run,
+    setNumericSource,
     setSource,
     source,
     sourceInput,
     statementTotal,
     updateClause,
+    validation,
     variableTotal,
   };
 }

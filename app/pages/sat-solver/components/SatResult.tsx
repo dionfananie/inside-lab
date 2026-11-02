@@ -7,21 +7,27 @@ type SatResultProps = {
 };
 
 export default function SatResult({ sat }: SatResultProps) {
-  const { parsing, result, run, statementTotal } = sat;
+  const { dimacsText, problem, result, run, statementTotal, validation } = sat;
 
   return (
     <section className="sat-panel" aria-labelledby="sat-result-title">
-      <div className="logic-section-label">03 / PERIKSA & PAHAMI</div>
-      <h2 id="sat-result-title">Hasil pemeriksaan</h2>
+      <div className="logic-section-label">04 / PERIKSA & PAHAMI</div>
+      <h2 id="sat-result-title">DIMACS dan hasil</h2>
+      <pre className="sat-dimacs-output" aria-label="Formula DIMACS otomatis">
+        {dimacsText || 'p cnf 0 0'}
+      </pre>
+      <p className="logic-help">
+        Header diperbarui otomatis: <code>p cnf {problem?.variables ?? 0} {statementTotal}</code>.
+      </p>
 
-      <Button onClick={run} disabled={statementTotal === 0 || !!parsing.error}>
+      <Button onClick={run} disabled={statementTotal === 0 || validation.errors.length > 0}>
         <Play size={16} />
-        Periksa kepuasan
+        Jalankan solver
       </Button>
 
-      {parsing.error && (
+      {validation.errors.length > 0 && (
         <p className="logic-error" role="alert">
-          {parsing.error}
+          Perbaiki format klausa sebelum menjalankan solver.
         </p>
       )}
 
@@ -30,21 +36,14 @@ export default function SatResult({ sat }: SatResultProps) {
           <span className="sat-result-title">
             <CheckCircle2 size={18} /> SAT — dapat dipenuhi
           </span>
-          <p>
-            Ada penugasan yang membuat semua klausa benar sekaligus. Salah satu
-            contohnya:
-          </p>
+          <p>Salah satu assignment yang memenuhi semua klausa:</p>
           <div className="sat-assignment">
-            {result.variables.map((v) => (
-              <span key={v} className="sat-assignment-item">
-                {v} = {result.assignment[v] ? 'benar' : 'salah'}
+            {result.variables.map((variable) => (
+              <span key={variable} className="sat-assignment-item">
+                x{variable} = {result.assignment[variable] ? 'true' : 'false'}
               </span>
             ))}
           </div>
-          <p className="sat-note">
-            Berarti tidak ada kontradiksi antar pernyataan. Kamu masih bisa
-            menambahkan kalimat lain dan memeriksa ulang — hasilnya bisa berubah.
-          </p>
         </div>
       )}
 
@@ -54,11 +53,8 @@ export default function SatResult({ sat }: SatResultProps) {
             <XCircle size={18} /> UNSAT — tidak dapat dipenuhi
           </span>
           <p>
-            Tidak ada satu pun penugasan yang membuat semua klausa benar
-            sekaligus. Pernyataan-pernyataan ini saling bertentangan; contoh
-            paling sederhana adalah <code className="sat-code">p</code> dan{' '}
-            <code className="sat-code">¬p</code> yang tidak mungkin sama-sama
-            benar.
+            Tidak ada assignment untuk x1 sampai x{result.variables.length} yang
+            membuat seluruh klausa benar sekaligus.
           </p>
         </div>
       )}

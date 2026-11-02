@@ -224,6 +224,67 @@
   font-family: var(--font-geist-mono);
 }
 
+.sat-numeric-textarea,
+.sat-clause-view,
+.sat-clause-input,
+.sat-dimacs-output,
+.sat-example {
+  font-family: var(--font-geist-mono);
+}
+
+.sat-dimacs-output,
+.sat-example {
+  margin: 16px 0;
+  padding: 14px 16px;
+  overflow-x: auto;
+  border: 1px solid #30483a;
+  border-radius: 8px;
+  background: #15241f;
+  color: #e4efe8;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  white-space: pre;
+}
+
+.sat-example {
+  margin: 16px 0;
+}
+
+.sat-natural-input {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+
+.sat-natural-input summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #255a43;
+  font-weight: 600;
+}
+
+.sat-natural-input .logic-help {
+  margin-top: 16px;
+}
+
+.sat-editor-help {
+  margin-bottom: 16px !important;
+}
+
+.sat-validation {
+  margin-top: 16px;
+}
+
+.sat-validation p {
+  margin: 0;
+}
+
+.sat-validation p + p {
+  margin-top: 6px;
+}
+
 @media (max-width: 900px) {
   .sat-layout {
     grid-template-columns: 1fr;

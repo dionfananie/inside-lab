@@ -1,5 +1,4 @@
 import { BookOpen } from 'lucide-react';
-import { satOperators } from '../data';
 
 export default function SatIntroduction() {
   return (
@@ -7,44 +6,37 @@ export default function SatIntroduction() {
       <span>COMPUTATIONAL LOGIC / SAT</span>
       <h1>SAT Solver</h1>
       <p>
-        Ubah kalimat sehari-hari menjadi pernyataan logika, lalu periksa apakah
-        semua bisa benar sekaligus.
+        Pelajari SAT melalui format DIMACS CNF: setiap klausa berisi literal angka
+        dan diakhiri dengan <code>0</code>.
       </p>
       <details className="logic-basics">
         <summary>
-          <BookOpen size={16} /> Baru mulai? Kenali konsep SAT
+          <BookOpen size={16} /> Baru mulai? Kenali format DIMACS
         </summary>
         <div className="logic-basics-content">
           <p>
-            <strong>Satisfiability (SAT)</strong> adalah pertanyaan: dapatkah kita
-            memberi nilai benar atau salah pada setiap variabel sehingga seluruh
-            kumpulan pernyataan menjadi benar?
+            <strong>SAT</strong> mencari assignment benar/salah yang membuat semua
+            klausa benar sekaligus. Dalam CNF, literal di dalam satu klausa
+            digabung dengan <code>∨</code>, sedangkan semua klausa digabung dengan{' '}
+            <code>∧</code>.
           </p>
           <p>
-            <strong>Klausa</strong> adalah satu pernyataan yang bisa bernilai benar
-            atau salah. <strong>Literal</strong> adalah variabel atau negasinya,
-            misalnya <code>p</code> atau <code>¬p</code>.
+            Angka positif berarti literal biasa, angka negatif berarti negasi, dan
+            angka <code>0</code> menandai akhir klausa.
+          </p>
+          <pre className="sat-example" aria-label="Contoh format DIMACS">
+{`p cnf 3 2
+1 -3 0
+2 3 -1 0`}
+          </pre>
+          <p>
+            Contoh tersebut berarti{' '}
+            <code>(x₁ ∨ ¬x₃) ∧ (x₂ ∨ x₃ ∨ ¬x₁)</code>. Header{' '}
+            <code>p cnf 3 2</code> menyatakan 3 variabel dan 2 klausa.
           </p>
           <p>
-            <strong>CNF</strong> (bentuk normal konjungtif) adalah bentuk di mana
-            banyak klausa digabung dengan <code>∧</code>. Solver mencari satu{' '}
-            <strong>assignment</strong>, yaitu pemetaan setiap variabel ke benar
-            atau salah, yang membuat semua klausa benar sekaligus.
-          </p>
-          <div className="logic-legend">
-            {satOperators.map(([symbol, label, help]) => (
-              <p key={symbol}>
-                <code>{symbol}</code>
-                <strong>{label}</strong>
-                <span>{help}</span>
-              </p>
-            ))}
-          </div>
-          <p>
-            Jika ada satu penugasan yang membuat semua klausa benar, hasilnya{' '}
-            <strong>SAT</strong>. Jika tidak ada sama sekali, hasilnya{' '}
-            <strong>UNSAT</strong>, artinya pernyataan-pernyataan itu saling
-            bertentangan.
+            Jika ada assignment yang memenuhi semuanya, hasilnya <strong>SAT</strong>.
+            Jika tidak ada, hasilnya <strong>UNSAT</strong>.
           </p>
         </div>
       </details>
