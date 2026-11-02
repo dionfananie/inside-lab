@@ -2,6 +2,7 @@ import type { Route } from "./+types/sat-solver";
 
 import { canonicalOf, socialMeta } from "~/lib/seo";
 import SatSolverPage from "~/pages/sat-solver";
+import "~/pages/logic-lab/logic.css";
 import "~/pages/sat-solver/sat-solver.css";
 
 export function loader({ request }: Route.LoaderArgs) {

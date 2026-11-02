@@ -12,12 +12,12 @@ export default function SatSolverPage() {
     <main className="logic-app sat-app">
       <SatHeader />
       <SatIntroduction />
-      <div className="sat-layout">
-        <div className="sat-input-area">
+      <div className="logic-workspace sat-layout">
+        <div className="logic-reference sat-input-area">
           <SentenceInput sat={sat} />
           <SatResult sat={sat} />
         </div>
-        <div className="sat-clause-area">
+        <div className="logic-playground sat-clause-area">
           <ClauseList sat={sat} />
         </div>
       </div>
