@@ -691,3 +691,69 @@ P → Q
 
 Dengan:
 - P = TRUE
+
+---
+
+## Rencana Implementasi — Knowledge Check Halaman Terpisah
+
+Knowledge Check sesi 1 akan dipindahkan dari halaman materi ke **halaman tersendiri**.
+
+### Tujuan
+
+1. Setiap sesi memiliki halaman knowledge check terpisah.
+2. Halaman materi berakhir dengan entry point menuju knowledge check.
+3. Mode hide/show yang saat ini tertanam di halaman sesi 1 dihapus.
+
+### Route
+
+| Route | Isi |
+|---|---|
+| `/computational-logic/session/1` | Halaman materi sesi 1 |
+| `/computational-logic/session/1/check` | Halaman knowledge check sesi 1 |
+
+### Entry point di halaman sesi
+
+Di paling bawah halaman materi sesi 1, ganti section Knowledge Check menjadi CTA:
+
+```text
+Siap menguji pemahaman?
+[ Lanjut ke knowledge check ]
+```
+
+CTA mengarah ke `/computational-logic/session/1/check`.
+
+### Isi halaman knowledge check
+
+- Soal micro-quiz dari materi sesi 1.
+- Dua jenis soal:
+  - **Pilihan ganda** — dinilai benar/salah otomatis.
+  - **Isian singkat** — dinilai dengan rubrik konsep kunci (mewarisi rubrik yang sudah ada).
+- Progress jawaban dan feedback per soal.
+- Link "Kembali ke materi" menuju halaman sesi 1.
+- Jawaban disimpan di `localStorage` dengan key per session id.
+
+### Refactor hide/show
+
+1. Hapus tombol "Mulai knowledge check" dari halaman sesi 1.
+2. Hapus mekanisme hide/show (`is-knowledge-check-active`) dari halaman sesi 1.
+3. Pindahkan mode fokus ke halaman check.
+4. Halaman sesi 1 tidak lagi merender komponen KnowledgeCheck.
+
+### Komponen reusable
+
+Knowledge Check dibuat sebagai komponen reusable agar bisa dipakai sesi 2–6:
+
+```text
+app/pages/computational-logic/check/
+├── KnowledgeCheck.tsx
+├── AnswerResult.tsx
+└── rubric.ts
+```
+
+### Kriteria selesai
+
+- Halaman sesi 1 tidak menampilkan knowledge check tertanam.
+- Halaman sesi 1 memiliki CTA di bagian bawah.
+- Halaman `/computational-logic/session/1/check` menampilkan semua soal sesi 1.
+- Soal pilihan ganda dan isian singkat dapat dinilai otomatis.
+- Mode fokus berjalan di halaman check, bukan di halaman materi.

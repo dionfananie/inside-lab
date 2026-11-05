@@ -9,7 +9,6 @@ import {
   sessionOneSections,
 } from "./data";
 import CodeBlock from "./components/CodeBlock";
-import KnowledgeCheck from "./components/KnowledgeCheck";
 import SessionNavigation from "./components/SessionNavigation";
 import "./session-1.css";
 
@@ -397,13 +396,22 @@ Formula: P → Q`}</CodeBlock>
           </section>
 
           <section className="session-one-section session-one-knowledge" aria-labelledby="knowledge-check">
-            <SectionHeading number="08" title="Knowledge check — evaluasi pemahaman" id="knowledge-check" />
+            <SectionHeading number="08" title="Knowledge check" id="knowledge-check" />
             <p>
-              Jawab seluruh pertanyaan berdasarkan materi yang telah dipelajari.
-              Tujuan evaluasi ini bukan sekadar menguji hafalan, tetapi mengukur
-              apakah konsep dapat dipahami dan diterapkan.
+              Uji pemahamanmu dengan micro-quiz dari materi sesi ini. Knowledge
+              check dibuka di halaman terpisah agar kamu fokus mengerjakan tanpa
+              melihat materi.
             </p>
-            <KnowledgeCheck />
+            <div className="session-one-check-cta">
+              <h3>Siap menguji pemahamanmu?</h3>
+              <p>
+                Kerjakan soal berdasarkan pemahaman sendiri, lalu lihat hasil
+                penilaian kelengkapan konsep.
+              </p>
+              <a className="computational-button computational-button-primary" href="/computational-logic/session/1/check">
+                Lanjut ke knowledge check <ArrowRight size={15} />
+              </a>
+            </div>
           </section>
         </article>
 

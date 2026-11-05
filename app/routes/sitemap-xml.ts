@@ -33,6 +33,11 @@ export function loader({ request }: Route.LoaderArgs) {
 			priority: "0.7",
 			changefreq: "monthly",
 		})),
+		...logicSessions.map((session) => ({
+			path: `${session.href}/check`,
+			priority: "0.6",
+			changefreq: "monthly",
+		})),
 		...chapters.map((chapter) => ({
 			path: `/js/${chapter.id}`,
 			priority: "0.8",

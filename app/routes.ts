@@ -11,6 +11,10 @@ export default [
 	route("computational-logic", "routes/computational-logic.tsx"),
 	route("computational-logic/session/:sessionId", "routes/computational-logic-session.tsx"),
 	route(
+		"computational-logic/session/:sessionId/check",
+		"routes/computational-logic-check.tsx",
+	),
+	route(
 		"computational-logic/proportional-logic",
 		"routes/proportional-logic.tsx",
 	),

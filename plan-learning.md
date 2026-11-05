@@ -31,6 +31,8 @@ Target akhir:
 | `/computational-logic` | Redirect ke `/computational-logic/proportional-logic` | Ada |
 | `/computational-logic/proportional-logic` | Logic Lab | Ada |
 | `/computational-logic/sat-solver` | SAT Solver | Ada |
+| `/computational-logic/session/:sessionId` | Halaman materi sesi | Ada |
+| `/computational-logic/session/:sessionId/check` | Knowledge check sesi (halaman terpisah) | Rencana |
 | `/lab` | Halaman lab/positioning produk | Ada, di luar dua jalur utama |
 
 ### Masalah pada homepage saat ini
@@ -59,6 +61,9 @@ Homepage
 └── 02 / Computational Logic
     ├── Computational Logic overview
     │   └── /computational-logic
+    ├── Sesi materi
+    │   └── /computational-logic/session/:sessionId
+    │       └── /computational-logic/session/:sessionId/check   # knowledge check terpisah
     ├── Logic Lab / logika proposisional (existing)
     │   └── /computational-logic/proportional-logic
     └── SAT Solver
@@ -192,6 +197,74 @@ Implementasi sesi 1 mengikuti `plan/sesi_1.md`: halaman materi lengkap berisi tu
 
 Sesi 1–6 memakai status `ready` karena halaman materi pengantarnya sudah tersedia. Logic Lab dan SAT Solver menjadi alat praktik untuk sesi terkait.
 
+### 5.3 Knowledge Check per sesi (halaman terpisah)
+
+Setiap sesi memiliki **halaman knowledge check tersendiri**, terpisah dari halaman materi.
+
+- Route: `/computational-logic/session/:sessionId/check`.
+- Halaman sesi tidak lagi menyematkan knowledge check. Sebagai gantinya, di **paling bawah** halaman sesi ada entry point berupa kartu/CTA:
+
+  ```text
+  Siap menguji pemahaman?
+  [ Lanjut ke knowledge check ]
+  ```
+
+- Halaman knowledge check berisi **micro-quiz** dari materi sesi tersebut:
+  - Pilihan ganda (dinilai benar/salah secara deterministik).
+  - Isian singkat (dinilai dengan rubrik konsep kunci, seperti yang sudah ada).
+- Halaman check punya:
+  - Header + link kembali ke halaman sesi.
+  - Judul dan ringkasan sesi.
+  - Mode fokus agar user tidak membaca materi saat mengerjakan.
+  - Progress jawaban dan skor/feedback per soal.
+  - Tombol **"Selesaikan"** untuk kembali ke halaman sesi atau sesi berikutnya.
+
+#### Refactor hide/show yang sekarang ada di sesi 1
+
+Saat ini knowledge check + mode hide/show tertanam di dalam halaman sesi 1. Rencananya:
+
+1. Pindahkan seluruh Knowledge Check ke halaman terpisah.
+2. Hapus tombol **"Mulai knowledge check"** dan mekanisme hide/show (`is-knowledge-check-active`) dari halaman sesi 1.
+3. Halaman sesi 1 diakhiri dengan CTA **"Lanjut ke knowledge check"** menuju `/computational-logic/session/1/check`.
+4. Mode fokus (sembunyikan materi) dipindahkan ke halaman check, sehingga halaman check dapat langsung fokus tanpa materi di atasnya.
+
+#### Struktur file knowledge check
+
+```text
+app/pages/computational-logic/
+├── sessions/
+│   └── session-1/
+│       ├── View.tsx                 # halaman materi (tanpa knowledge check)
+│       └── check/
+│           ├── index.ts
+│           ├── View.tsx             # halaman knowledge check sesi 1
+│           ├── data.ts              # soal micro-quiz sesi 1
+│           └── session-1-check.css
+├── check/                           # komponen knowledge check reusable (opsional)
+│   ├── KnowledgeCheck.tsx
+│   ├── AnswerResult.tsx
+│   └── rubric.ts
+└── data.ts                          # shared: logicSessions + findLogicSession
+```
+
+#### Model data soal
+
+```ts
+export type QuizQuestion = {
+  id: string;
+  type: "multiple-choice" | "short-answer";
+  prompt: string;
+  code?: string;
+  options?: { label: string; correct: boolean }[];
+  rubric?: { concepts: { label: string; terms: string[] }[]; minWords: number };
+  answer: string;
+};
+```
+
+- Soal pilihan ganda memakai `options` dan `correct`.
+- Soal isian singkat memakai `rubric` untuk auto-check kelengkapan konsep.
+- Skor akhir = gabungan hasil pilihan ganda dan kelengkapan konsep.
+
 ---
 
 ## 6. Struktur File yang Diusulkan
@@ -302,6 +375,17 @@ Data jalur dan 6 sesi disimpan di `app/pages/home/data.ts` agar homepage tidak p
 - [x] Sesi 3, 5, 6: buat halaman materi baru saat konten siap.
 - [x] Ubah status sesi dari `coming-soon` menjadi `ready` setelah halaman tersedia.
 
+### Fase 4b — Knowledge check halaman terpisah
+
+- [x] Pindahkan soal Knowledge Check sesi 1 ke halaman `/computational-logic/session/1/check`.
+- [x] Hapus tombol "Mulai knowledge check" dan mode hide/show dari halaman sesi 1.
+- [x] Tambahkan CTA "Lanjut ke knowledge check" di bawah halaman sesi 1.
+- [x] Buat komponen knowledge check reusable untuk dipakai semua sesi.
+- [ ] Dukung soal pilihan ganda dan isian singkat dengan auto-check (baru isian singkat).
+- [x] Tambahkan mode fokus + progress + skor di halaman check.
+- [x] Tambahkan meta dan sitemap untuk route `/check`.
+- [ ] Terapkan pola yang sama ke sesi 2–6 secara bertahap (route + placeholder sudah ada).
+
 ### Fase 5 — Verifikasi
 
 - [x] Semua route lama tetap dipertahankan.
@@ -324,6 +408,10 @@ Data jalur dan 6 sesi disimpan di `app/pages/home/data.ts` agar homepage tidak p
 - Sesi yang belum memiliki halaman ditandai dengan jelas sebagai "Segera hadir" dan tidak menjadi tautan mati.
 - Route existing tidak berubah dan tidak menimbulkan 404.
 - Copy header, footer, hero, dan metrics konsisten dengan konsep dua jalur.
+- Setiap sesi punya halaman knowledge check terpisah di `/computational-logic/session/:sessionId/check`.
+- Halaman sesi tidak lagi menampilkan knowledge check tertanam; hanya ada CTA di bagian bawah.
+- Mode hide/show tidak lagi ada di halaman sesi; fokus pindah ke halaman check.
+- Soal micro-quiz dapat dinilai otomatis (pilihan ganda) dan dinilai rubrik (isian singkat).
 - Build dan typecheck lolos.
 
 ---
@@ -348,3 +436,5 @@ Data jalur dan 6 sesi disimpan di `app/pages/home/data.ts` agar homepage tidak p
 | Tabel 6 sesi terlihat seperti konten yang sudah jadi | Beri badge status "Segera hadir" dan hindari tautan palsu. |
 | Perubahan homepage merusak layout mobile | Uji breakpoint 600px dan 900px serta grid dua kartu. |
 | Route `/computational-logic` yang sebelumnya redirect berubah perilaku | Pastikan landing page baru tetap mengarahkan pengguna ke Logic Lab dan SAT Solver. |
+| Knowledge check terpisah membuat user kehilangan konteks sesi | Tambahkan link "Kembali ke materi" dan judul sesi di halaman check. |
+| Pindah halaman membuat jawaban tidak tersimpan saat berpindah | Simpan jawaban per sesi di `localStorage` dengan key per session id. |

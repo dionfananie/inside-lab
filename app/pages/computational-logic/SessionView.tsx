@@ -46,6 +46,16 @@ export default function ComputationalLogicSession({ sessionId }: SessionViewProp
           {session.tool && <a className="computational-button computational-button-primary" href={session.tool.href}>{session.tool.label} <ArrowRight size={15} /></a>}
         </aside>
       </section>
+      <section className="computational-lesson-cta">
+        <div>
+          <div className="computational-section-label">KNOWLEDGE CHECK</div>
+          <h2>Siap menguji pemahamanmu?</h2>
+          <p>Kerjakan micro-quiz dari materi sesi ini di halaman terpisah.</p>
+        </div>
+        <a className="computational-button computational-button-primary" href={`/computational-logic/session/${session.session}/check`}>
+          Lanjut ke knowledge check <ArrowRight size={15} />
+        </a>
+      </section>
       <nav className="computational-session-navigation" aria-label="Navigasi sesi">
         {previous ? <a href={previous.href}><ArrowLeft size={15} /> Sesi sebelumnya</a> : <span />}
         {next ? <a href={next.href}>Sesi berikutnya <ArrowRight size={15} /></a> : <a href="/computational-logic">Selesai <ArrowRight size={15} /></a>}

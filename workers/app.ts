@@ -1,4 +1,5 @@
 import { authApi } from './api/auth';
+import { checkApi } from './api/check';
 import { createRequestHandler } from "react-router";
 
 declare module "react-router" {
@@ -27,6 +28,7 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname.startsWith('/api/auth')) return authApi(request, env);
+    if (url.pathname.startsWith('/api/check')) return checkApi(request, env);
     return requestHandler(request, {
       cloudflare: { env, ctx },
     });
