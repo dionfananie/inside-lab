@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import {
   formatDimacs,
   numericClauseFromLiterals,
@@ -106,11 +106,8 @@ export default function useSatSolver() {
     requestAnimationFrame(() => numericSourceInput.current?.focus());
   }
 
-  const addClause = useCallback(() => addFromSource(), [source, clauses]);
-  const addNumericClause = useCallback(
-    () => addFromNumericSource(),
-    [numericSource],
-  );
+  const addClause = addFromSource;
+  const addNumericClause = addFromNumericSource;
 
   function updateClause(id: string, raw: string) {
     setClauses((prev) => prev.map((c) => (c.id === id ? { ...c, raw } : c)));

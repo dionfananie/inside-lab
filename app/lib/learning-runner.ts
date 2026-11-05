@@ -53,8 +53,9 @@ export function execute(
       1500,
     );
     signal.addEventListener('abort', abort, { once: true });
-    worker.onmessage = (e) => {
-      if (e.data?.id === id) finish(e.data);
+    worker.onmessage = (event: MessageEvent<RunResult & { id?: string }>) => {
+      const data = event.data;
+      if (data?.id === id) finish(data);
     };
     worker.onerror = () =>
       finish({

@@ -56,6 +56,8 @@ export default function useRuntimeJs() {
 
   useLayoutEffect(() => {
     const stored = loadSettings();
+    // Hydrate persisted settings after mount; localStorage is unavailable during SSR.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setThemeName(stored.theme);
     setFontSize(stored.fontSize);
     setFontSizeInput(String(stored.fontSize));
@@ -69,7 +71,9 @@ export default function useRuntimeJs() {
         settingsKey,
         JSON.stringify({ theme: themeName, fontSize }),
       );
-    } catch {}
+    } catch {
+      // Ignore storage failures; the in-memory settings still apply.
+    }
   }, [settingsReady, themeName, fontSize]);
 
   useLayoutEffect(() => {
@@ -96,6 +100,8 @@ export default function useRuntimeJs() {
 
   useEffect(() => {
     if (paused) {
+      // Reflect the pause toggle in the status label.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setStatus("Paused");
       return;
     }

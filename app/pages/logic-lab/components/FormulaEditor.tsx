@@ -13,7 +13,7 @@ export default function FormulaEditor({ logicLab }: FormulaEditorProps) {
     analysis,
     conclusionInput,
     conclusionText,
-    field,
+    fieldRef,
     insertSymbol,
     modified,
     premiseInput,
@@ -42,7 +42,7 @@ export default function FormulaEditor({ logicLab }: FormulaEditorProps) {
           value={premiseText}
           maxLength={240}
           onFocus={() => {
-            field.current = 'premise';
+            fieldRef.current = 'premise';
           }}
           onChange={(event) => setPremiseText(event.target.value)}
           aria-invalid={!!analysis.error}
@@ -59,7 +59,7 @@ export default function FormulaEditor({ logicLab }: FormulaEditorProps) {
           value={conclusionText}
           maxLength={240}
           onFocus={() => {
-            field.current = 'conclusion';
+            fieldRef.current = 'conclusion';
           }}
           onChange={(event) => setConclusionText(event.target.value)}
           aria-invalid={!!analysis.error}

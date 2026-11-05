@@ -4,6 +4,14 @@ import { execute, type RunResult, type Result } from '~/lib/learning-runner';
 import { nextLearningStep } from '~/lib/learning-flow';
 import type { LearningPageProps, ModelContextDocument } from './types';
 
+type StoredLearningState = {
+  drafts?: unknown;
+  answers?: unknown;
+  completed?: unknown;
+  partIndex?: number;
+  exerciseIndex?: number;
+};
+
 export default function useLearningPage({
   chapterId = 'values-types-operators',
 }: LearningPageProps) {
@@ -64,34 +72,41 @@ export default function useLearningPage({
   const navigationPosition = useRef({ partIndex, exerciseIndex });
   navigationPosition.current = { partIndex, exerciseIndex };
 
+  /* eslint-disable react-hooks/set-state-in-effect -- Hydrate saved progress after mount; reading localStorage during render would break SSR. */
   useEffect(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
+      const saved = JSON.parse(
+        localStorage.getItem(storageKey) || 'null',
+      ) as StoredLearningState | null;
       if (saved && typeof saved === 'object') {
-        const validStrings = (v: unknown) =>
-          v && typeof v === 'object'
-            ? Object.fromEntries(
-                Object.entries(v).filter(
-                  ([k, val]) =>
-                    allExercises.some((e) => e.id === k) &&
-                    typeof val === 'string' &&
-                    val.length < 100000,
-                ),
-              )
-            : {};
-        setDrafts(validStrings(saved.drafts) as Record<string, string>);
-        setAnswers(validStrings(saved.answers) as Record<string, string>);
-        if (Array.isArray(saved.completed))
-          setCompleted([
-            ...new Set(
-              saved.completed.filter(
-                (id: unknown) =>
-                  typeof id === 'string' &&
-                  allExercises.some((e) => e.id === id),
-              ),
-            ),
-          ] as string[]);
+        const validStrings = (value: unknown): Record<string, string> => {
+          if (!value || typeof value !== 'object') return {};
+          const result: Record<string, string> = {};
+          for (const [key, entry] of Object.entries(
+            value as Record<string, unknown>,
+          )) {
+            if (
+              typeof entry === 'string' &&
+              entry.length < 100000 &&
+              allExercises.some((e) => e.id === key)
+            ) {
+              result[key] = entry;
+            }
+          }
+          return result;
+        };
+        setDrafts(validStrings(saved.drafts));
+        setAnswers(validStrings(saved.answers));
+        if (Array.isArray(saved.completed)) {
+          const completedIds = (saved.completed as unknown[]).filter(
+            (id): id is string =>
+              typeof id === 'string' &&
+              allExercises.some((e) => e.id === id),
+          );
+          setCompleted([...new Set(completedIds)]);
+        }
         const p =
+          typeof saved.partIndex === 'number' &&
           Number.isInteger(saved.partIndex) &&
           saved.partIndex >= 0 &&
           saved.partIndex < parts.length
@@ -99,7 +114,8 @@ export default function useLearningPage({
             : 0;
         setPartIndex(p);
         setExerciseIndex(
-          Number.isInteger(saved.exerciseIndex) &&
+          typeof saved.exerciseIndex === 'number' &&
+            Number.isInteger(saved.exerciseIndex) &&
             saved.exerciseIndex >= 0 &&
             saved.exerciseIndex < parts[p].exercises.length
             ? saved.exerciseIndex
@@ -110,7 +126,10 @@ export default function useLearningPage({
       setStorageError(true);
     }
     setReady(true);
+    // Hydration runs once per mounted chapter page; chapter data is static.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (!ready) return;
     const timer = setTimeout(() => {
@@ -127,14 +146,17 @@ export default function useLearningPage({
         );
         setStorageError(false);
       } catch {
+        // Storage may be unavailable (private mode or quota); keep working in memory.
         setStorageError(true);
       }
     }, 250);
     return () => clearTimeout(timer);
-  }, [drafts, answers, completed, partIndex, exerciseIndex, ready]);
+  }, [drafts, answers, completed, partIndex, exerciseIndex, ready, storageKey]);
   useEffect(() => {
     job.current?.abort();
     revision.current++;
+    // Reset per-exercise runtime state when the selected exercise changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setOutput({});
     setResults([]);
     setChecked(false);
@@ -143,6 +165,8 @@ export default function useLearningPage({
     setResultTab('console');
     return () => {
       job.current?.abort();
+      // Invalidate the latest revision so in-flight results are ignored.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       revision.current++;
     };
   }, [exercise.id]);
@@ -221,8 +245,12 @@ export default function useLearningPage({
     return () => {
       if (autoTimer.current) clearTimeout(autoTimer.current);
       job.current?.abort();
+      // Invalidate the latest revision so in-flight results are ignored.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       revision.current++;
     };
+    // run() is intentionally omitted: it is redefined every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code, exercise.id, autoRun, ready]);
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -266,8 +294,12 @@ export default function useLearningPage({
           { signal: controller.signal },
         ),
       ).catch(() => {});
-    } catch {}
+    } catch {
+      // Model context is optional; ignore pages that do not expose it.
+    }
     return () => controller.abort();
+    // Register the tool once; chapter and navigation data are static for this page.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   function edit(value: string) {
     job.current?.abort();
@@ -277,6 +309,15 @@ export default function useLearningPage({
     setChecked(false);
     setOutput({});
     setDrafts((current) => ({ ...current, [exercise.id]: value }));
+  }
+  function chooseAnswer(value: string) {
+    job.current?.abort();
+    revision.current++;
+    setBusy(null);
+    setAnswers((current) => ({ ...current, [exercise.id]: value }));
+    setChecked(false);
+    setResults([]);
+    setOutput({});
   }
   function navigate(nextPart: number, nextExercise: number, moveFocus = true) {
     const previous = navigationPosition.current;
@@ -340,6 +381,7 @@ export default function useLearningPage({
     chapter,
     chapters,
     checked,
+    chooseAnswer,
     code,
     completed,
     completedParts,

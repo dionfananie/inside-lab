@@ -48,6 +48,22 @@ npm run dev
 
 Your application will be available at `http://localhost:5173`.
 
+## Linting
+
+Run ESLint across the application, configuration files, and worker scripts:
+
+```bash
+npm run lint
+```
+
+Automatically fix safe issues:
+
+```bash
+npm run lint:fix
+```
+
+The flat config (`eslint.config.js`) enables type-aware TypeScript rules, React Hooks rules, and JSX accessibility checks. TSLint is not used because it was deprecated in 2019; its rules and maintenance moved to ESLint via `typescript-eslint`.
+
 ## Typegen
 
 Generate types for your Cloudflare bindings in `wrangler.json`:
