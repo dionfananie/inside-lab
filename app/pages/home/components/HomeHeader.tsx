@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 
+import AuthControl from "~/components/AuthControl";
 import { InsideLabBrand } from "~/components/inside-lab-brand";
 
 type HomeHeaderProps = {
@@ -18,6 +19,7 @@ export default function HomeHeader({ firstChapterHref }: HomeHeaderProps) {
       <a className="home-header-cta" href={firstChapterHref}>
         Mulai belajar <ArrowRight size={15} />
       </a>
+      <AuthControl />
     </header>
   );
 }

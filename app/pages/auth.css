@@ -1,0 +1,77 @@
+.auth-page {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 24px;
+  background: #fbfaf4;
+}
+
+.auth-card {
+  width: min(100%, 440px);
+  padding: 32px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--background);
+}
+
+.auth-copy {
+  margin: 48px 0 24px;
+}
+
+.auth-copy h1 {
+  margin: 12px 0 10px;
+  font-size: clamp(28px, 5vw, 40px);
+}
+
+.auth-copy p,
+.auth-note {
+  color: var(--muted-foreground);
+  line-height: 1.7;
+}
+
+.auth-google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--background);
+  color: var(--foreground);
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.auth-google-button:hover,
+.auth-google-button:focus-visible {
+  border-color: var(--ring);
+  background: var(--secondary);
+}
+
+.auth-note {
+  margin: 18px 0 0;
+  padding: 12px;
+  border-radius: 6px;
+  background: var(--secondary);
+  font-size: 0.875rem;
+}
+
+.auth-back-link {
+  display: inline-block;
+  margin-top: 24px;
+  color: var(--primary);
+  font-size: 0.875rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .auth-page {
+    padding: 16px;
+  }
+
+  .auth-card {
+    padding: 24px 20px;
+  }
+}

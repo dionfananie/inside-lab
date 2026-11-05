@@ -3,12 +3,22 @@
 	"name": "inside-lab",
 	"main": "./workers/app.ts",
 	"compatibility_date": "2025-10-08",
-	"compatibility_flags": ["nodejs_compat"],
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
 	"observability": {
 		"enabled": true
 	},
 	"upload_source_maps": true,
 	"vars": {
 		"VALUE_FROM_CLOUDFLARE": "Hello from Cloudflare"
-	}
+	},
+	"d1_databases": [
+		{
+			"binding": "inside_lab_db",
+			"database_name": "inside-lab-db",
+			"database_id": "3a3d49e0-f0a3-4968-9fbc-8569660de19c",
+			"migrations_dir": "migrations"
+		}
+	]
 }
