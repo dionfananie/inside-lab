@@ -9,6 +9,7 @@ export default [
 	route("sitemap.xml", "routes/sitemap-xml.ts"),
 	route("login", "routes/login.tsx"),
 	route("computational-logic", "routes/computational-logic.tsx"),
+	route("computational-logic/session/:sessionId", "routes/computational-logic-session.tsx"),
 	route(
 		"computational-logic/proportional-logic",
 		"routes/proportional-logic.tsx",

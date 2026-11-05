@@ -1,4 +1,4 @@
-import { CheckCircle2, Play, XCircle } from 'lucide-react';
+import { CheckCircle2, Play, RefreshCw, XCircle } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import type useSatSolver from '../useSatSolver';
 
@@ -7,7 +7,16 @@ type SatResultProps = {
 };
 
 export default function SatResult({ sat }: SatResultProps) {
-  const { dimacsText, problem, result, run, statementTotal, validation } = sat;
+  const {
+    dimacsText,
+    hasContent,
+    problem,
+    resetAll,
+    result,
+    run,
+    statementTotal,
+    validation,
+  } = sat;
 
   return (
     <section className="sat-panel" aria-labelledby="sat-result-title">
@@ -20,15 +29,34 @@ export default function SatResult({ sat }: SatResultProps) {
         Header diperbarui otomatis: <code>p cnf {problem?.variables ?? 0} {statementTotal}</code>.
       </p>
 
-      <Button onClick={run} disabled={statementTotal === 0 || validation.errors.length > 0}>
-        <Play size={16} />
-        Jalankan solver
-      </Button>
+      <div className="sat-result-actions">
+        <Button onClick={run} disabled={statementTotal === 0 || validation.errors.length > 0}>
+          <Play size={16} />
+          Jalankan solver
+        </Button>
+        <Button
+          variant="outline"
+          onClick={resetAll}
+          disabled={!hasContent}
+          title="Reset semua input dan hasil"
+        >
+          <RefreshCw size={16} />
+          Reset semua
+        </Button>
+      </div>
 
       {validation.errors.length > 0 && (
         <p className="logic-error" role="alert">
           Perbaiki format klausa sebelum menjalankan solver.
         </p>
+      )}
+
+      {(result.status === 'sat' || result.status === 'unsat') && (
+        <pre className="sat-solver-output" aria-label="Output solver" role="status" aria-live="polite">
+          {result.status === 'sat'
+            ? `CPU time: ${result.cpuTime.toFixed(3)}s\nSAT ${result.model.join(' ')}`
+            : `CPU time: ${result.cpuTime.toFixed(3)}s\nUNSAT`}
+        </pre>
       )}
 
       {result.status === 'sat' && (

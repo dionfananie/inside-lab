@@ -1,3 +1,5 @@
+export { logicSessions } from "~/pages/computational-logic/data";
+
 const siteName = "insideLab";
 
 export const chapterDescriptions: Record<string, string> = {

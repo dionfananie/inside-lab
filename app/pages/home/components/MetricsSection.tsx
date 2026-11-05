@@ -2,14 +2,14 @@ type MetricsSectionProps = {
   chapterCount: number;
   totalParts: number;
   totalExercises: number;
-  ruleCount: number;
+  logicSessionCount: number;
 };
 
 export default function MetricsSection({
   chapterCount,
   totalParts,
   totalExercises,
-  ruleCount,
+  logicSessionCount,
 }: MetricsSectionProps) {
   return (
     <section className="home-metrics" aria-label="Cakupan materi insideLab">
@@ -26,8 +26,8 @@ export default function MetricsSection({
         <span>Latihan bertahap</span>
       </div>
       <div>
-        <strong>{ruleCount}</strong>
-        <span>Bentuk argumen</span>
+        <strong>{logicSessionCount}</strong>
+        <span>Sesi computational logic</span>
       </div>
     </section>
   );

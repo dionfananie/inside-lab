@@ -7,7 +7,7 @@ import HomePage, {
 	type HomeExercise,
 } from "~/pages/home";
 import "~/pages/home/home.css";
-import { rules } from "~/pages/logic-lab/rules";
+import { logicSessions } from "~/pages/computational-logic/data";
 
 export function loader({ request }: Route.LoaderArgs) {
 	const chapterSummaries: HomeChapter[] = chapters.map((chapter) => ({
@@ -43,7 +43,7 @@ export function loader({ request }: Route.LoaderArgs) {
 			(total, chapter) => total + chapter.exerciseCount,
 			0,
 		),
-		ruleCount: rules.length,
+		logicSessionCount: logicSessions.length,
 		canonical: canonicalOf(request.url),
 		origin: originOf(request.url),
 	};
@@ -52,7 +52,7 @@ export function loader({ request }: Route.LoaderArgs) {
 const homeTitle = "insideLab — Belajar JavaScript & Logika secara Interaktif";
 
 export const meta: Route.MetaFunction = ({ loaderData }) => {
-	const description = `Belajar JavaScript dan logika dengan mencoba langsung. Jelajahi ${loaderData.chapters.length} bab, ${loaderData.totalExercises} latihan bertahap, tabel kebenaran, dan runtime JavaScript interaktif.`;
+	const description = `Pilih dua jalur belajar insideLab: Learning JS dengan runtime JavaScript interaktif atau Computational Logic dengan Logic Lab, SAT Solver, dan enam sesi logika formal.`;
 	return [
 		{ title: homeTitle },
 		{ name: "description", content: description },

@@ -21,6 +21,6 @@ export type HomePageProps = {
   firstExercises: HomeExercise[];
   totalParts: number;
   totalExercises: number;
-  ruleCount: number;
+  logicSessionCount: number;
   origin?: string;
 };

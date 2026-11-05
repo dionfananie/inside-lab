@@ -156,6 +156,23 @@
   gap: 6px 12px;
   font-size: 0.875rem;
 }
+.logic-scenario-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 12px 0 18px;
+}
+.logic-scenario-card {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid #d4dfd1;
+  border-radius: 6px;
+  background: #f7faf4;
+}
+.logic-scenario-card strong { font-size: 0.875rem; }
+.logic-scenario-card span { color: #526357; font-size: 0.8rem; line-height: 1.5; }
+.logic-scenario-card code { color: #255a43; font-size: 0.8rem; }
 .logic-legend code {
   font-size: 1.125rem;
   grid-row: span 2;
@@ -475,6 +492,9 @@
     grid-column: 2;
   }
   .logic-legend {
+    grid-template-columns: 1fr;
+  }
+  .logic-scenario-list {
     grid-template-columns: 1fr;
   }
   .logic-next,

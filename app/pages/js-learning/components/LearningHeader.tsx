@@ -13,12 +13,6 @@ export function LearningHeader({ learning }: LearningHeaderProps) {
     <header className="app-header">
       <InsideLabBrand area="JS Learning" />
       <span className="header-divider" />
-      <a
-        className="learning-path-link"
-        href="/computational-logic/proportional-logic"
-      >
-        Computational Logic ↗
-      </a>
       <NativeSelect
         className="chapter-select"
         aria-label="Pilih bab"

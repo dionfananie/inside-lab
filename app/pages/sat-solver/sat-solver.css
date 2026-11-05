@@ -7,6 +7,13 @@
   min-width: 0;
 }
 
+.sat-result-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .sat-panel {
   margin-bottom: 28px;
 }
@@ -228,11 +235,13 @@
 .sat-clause-view,
 .sat-clause-input,
 .sat-dimacs-output,
+.sat-solver-output,
 .sat-example {
   font-family: var(--font-geist-mono);
 }
 
 .sat-dimacs-output,
+.sat-solver-output,
 .sat-example {
   margin: 16px 0;
   padding: 14px 16px;
@@ -244,6 +253,10 @@
   font-size: 0.875rem;
   line-height: 1.7;
   white-space: pre;
+}
+
+.sat-solver-output {
+  margin-top: 18px;
 }
 
 .sat-example {

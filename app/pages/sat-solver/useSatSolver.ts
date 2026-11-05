@@ -1,5 +1,10 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { formatDimacs, parseDimacsClauses } from './dimacs';
+import {
+  formatDimacs,
+  numericClauseFromLiterals,
+  parseDimacsClauses,
+  parseDimacsInput,
+} from './dimacs';
 import type { SatResult } from './solver';
 import { solveSat } from './solver';
 import {
@@ -15,12 +20,16 @@ export default function useSatSolver() {
   const [clauses, setClauses] = useState<Clause[]>([]);
   const [source, setSource] = useState('');
   const [numericSource, setNumericSource] = useState('');
+  const [declaredVariables, setDeclaredVariables] = useState(0);
   const [result, setResult] = useState<SatResult>({ status: 'idle' });
   const [announcement, setAnnouncement] = useState('');
   const sourceInput = useRef<HTMLTextAreaElement>(null);
   const numericSourceInput = useRef<HTMLTextAreaElement>(null);
 
-  const validation = useMemo(() => parseDimacsClauses(clauses), [clauses]);
+  const validation = useMemo(
+    () => parseDimacsClauses(clauses, 26, declaredVariables),
+    [clauses, declaredVariables],
+  );
   const problem = validation.problem;
   const variableTotal = problem?.variables ?? variableCount(clauses);
   const statementTotal = clauses.length;
@@ -57,6 +66,36 @@ export default function useSatSolver() {
   }
 
   function addFromNumericSource() {
+    const text = numericSource.trim();
+    if (!text) return;
+
+    if (/^\s*p\s+cnf\b/im.test(text)) {
+      try {
+        const parsed = parseDimacsInput(text);
+        if (parsed.clauses.length === 0) {
+          setAnnouncement(
+            'Header DIMACS dikenali, tetapi belum ada klausa yang bisa ditambahkan.',
+          );
+          return;
+        }
+        setDeclaredVariables((prev) => Math.max(prev, parsed.declaredVariables));
+        appendRows(
+          parsed.clauses.map((literals) => ({
+            id: nextId(),
+            raw: numericClauseFromLiterals(literals),
+          })),
+        );
+        setNumericSource('');
+        requestAnimationFrame(() => numericSourceInput.current?.focus());
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : 'DIMACS tidak valid.';
+        setResult({ status: 'error', message });
+        setAnnouncement(message);
+      }
+      return;
+    }
+
     const values = numericSource
       .split(/[\n;]/)
       .map((value) => value.trim())
@@ -83,6 +122,23 @@ export default function useSatSolver() {
     resetResult();
   }
 
+  function resetAll() {
+    setClauses([]);
+    setSource('');
+    setNumericSource('');
+    setDeclaredVariables(0);
+    setResult({ status: 'idle' });
+    setAnnouncement('Semua input dan hasil sudah direset.');
+    requestAnimationFrame(() => numericSourceInput.current?.focus());
+  }
+
+  const hasContent =
+    clauses.length > 0 ||
+    source.trim().length > 0 ||
+    numericSource.trim().length > 0 ||
+    declaredVariables > 0 ||
+    result.status !== 'idle';
+
   function run() {
     if (validation.errors.length > 0 || !problem) {
       setResult({ status: 'error', message: validation.errors[0] ?? 'Masukkan klausa terlebih dahulu.' });
@@ -106,10 +162,12 @@ export default function useSatSolver() {
     announcement,
     clauses,
     dimacsText,
+    hasContent,
     numericSource,
     numericSourceInput,
     problem,
     removeClause,
+    resetAll,
     result,
     run,
     setNumericSource,

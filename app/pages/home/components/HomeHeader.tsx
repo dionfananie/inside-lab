@@ -14,7 +14,8 @@ export default function HomeHeader({ firstChapterHref }: HomeHeaderProps) {
       <nav className="home-nav" aria-label="Navigasi utama">
         <a href="#cara-belajar">Cara belajar</a>
         <a href="#materi">Materi</a>
-        <a href="#laboratorium">Laboratorium</a>
+        <a href="#jalur">Jalur belajar</a>
+        <a href="#computational-logic">Computational Logic</a>
       </nav>
       <div className="home-header-actions">
         <a className="home-header-cta" href={firstChapterHref}>
