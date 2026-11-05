@@ -16,10 +16,12 @@ export default function HomeHeader({ firstChapterHref }: HomeHeaderProps) {
         <a href="#materi">Materi</a>
         <a href="#laboratorium">Laboratorium</a>
       </nav>
-      <a className="home-header-cta" href={firstChapterHref}>
-        Mulai belajar <ArrowRight size={15} />
-      </a>
-      <AuthControl />
+      <div className="home-header-actions">
+        <a className="home-header-cta" href={firstChapterHref}>
+          Mulai belajar <ArrowRight size={15} />
+        </a>
+        <AuthControl />
+      </div>
     </header>
   );
 }

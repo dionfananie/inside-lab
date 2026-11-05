@@ -87,8 +87,15 @@
   transform-origin: left;
 }
 
-.home-header-cta {
+.home-header-actions {
   justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.home-header-cta {
+  justify-self: auto;
   min-height: 40px;
   padding: 0 16px;
   display: inline-flex;
@@ -1487,6 +1494,19 @@
     min-height: 39px;
     padding: 0 12px;
     font-size: 12px;
+  }
+
+  .home-header-actions {
+    gap: 6px;
+  }
+
+  .auth-control {
+    padding: 0 8px;
+    font-size: 12px;
+  }
+
+  .auth-user {
+    display: none;
   }
 
   .home-hero {
