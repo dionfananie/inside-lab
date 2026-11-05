@@ -6,9 +6,11 @@ import {
   everydayVsFormal,
   implicationTruthTable,
   sessionOneObjectives,
+  sessionOneSections,
 } from "./data";
 import CodeBlock from "./components/CodeBlock";
 import KnowledgeCheck from "./components/KnowledgeCheck";
+import SessionNavigation from "./components/SessionNavigation";
 import "./session-1.css";
 
 function SectionHeading({ number, title, id }: { number: string; title: string; id: string }) {
@@ -43,17 +45,6 @@ function DataTable({ caption, headers, rows }: { caption: string; headers: strin
 }
 
 export default function SessionOneView() {
-  const toc = [
-    ["tujuan", "Tujuan belajar"],
-    ["apa-itu-logika", "Apa itu logika?"],
-    ["logika-formal", "Logika formal"],
-    ["pentingnya-logika-formal", "Komputer dan AI"],
-    ["tiga-komponen", "Tiga komponen"],
-    ["hubungan-komponen", "Hubungan komponen"],
-    ["ringkasan", "Ringkasan"],
-    ["knowledge-check", "Knowledge check"],
-  ];
-
   return (
     <main className="computational-page session-one-page">
       <header className="computational-header">
@@ -417,10 +408,7 @@ Formula: P → Q`}</CodeBlock>
         </article>
 
         <aside className="session-one-toc" aria-label="Daftar isi sesi">
-          <span className="computational-section-label">DI SESI INI</span>
-          <nav>
-            {toc.map(([href, label]) => <a href={`#${href}`} key={href}>{label}</a>)}
-          </nav>
+          <SessionNavigation sections={sessionOneSections} />
           <div className="session-one-toc-note">
             <strong>Setelah sesi ini</strong>
             <p>Lanjut ke logika proposisional dan tabel kebenaran pada sesi 2.</p>

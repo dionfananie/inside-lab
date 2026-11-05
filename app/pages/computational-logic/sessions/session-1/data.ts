@@ -1,3 +1,14 @@
+export const sessionOneSections = [
+  { id: "tujuan", label: "Tujuan belajar" },
+  { id: "apa-itu-logika", label: "Apa itu logika?" },
+  { id: "logika-formal", label: "Logika formal" },
+  { id: "pentingnya-logika-formal", label: "Komputer dan AI" },
+  { id: "tiga-komponen", label: "Tiga komponen" },
+  { id: "hubungan-komponen", label: "Hubungan komponen" },
+  { id: "ringkasan", label: "Ringkasan" },
+  { id: "knowledge-check", label: "Knowledge check" },
+];
+
 export const sessionOneObjectives = [
   "Menjelaskan pengertian logika.",
   "Menjelaskan pengertian logika formal.",
