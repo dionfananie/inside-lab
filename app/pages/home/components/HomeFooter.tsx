@@ -11,7 +11,8 @@ export default function HomeFooter({ firstChapterHref }: HomeFooterProps) {
       <p>Ruang belajar interaktif untuk JavaScript dan computational logic.</p>
       <nav aria-label="Navigasi footer">
         <a href={firstChapterHref}>JavaScript</a>
-        <a href="/computational-logic/proportional-logic">Logic Lab</a>
+        <a href="/computational-logic">Computational Logic</a>
+        <a href="/computational-logic/sat-solver">SAT Solver</a>
         <a href="/play">Runtime JS</a>
       </nav>
     </footer>

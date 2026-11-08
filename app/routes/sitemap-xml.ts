@@ -2,6 +2,7 @@ import type { Route } from "./+types/sitemap-xml";
 
 import { chapters } from "~/content/curriculum";
 import { originOf } from "~/lib/seo";
+import { logicSessions } from "~/pages/computational-logic/data";
 
 export function loader({ request }: Route.LoaderArgs) {
 	const origin = originOf(request.url);
@@ -17,6 +18,26 @@ export function loader({ request }: Route.LoaderArgs) {
 			priority: "0.8",
 			changefreq: "monthly",
 		},
+		{
+			path: "/computational-logic",
+			priority: "0.9",
+			changefreq: "monthly",
+		},
+		{
+			path: "/computational-logic/sat-solver",
+			priority: "0.8",
+			changefreq: "monthly",
+		},
+		...logicSessions.map((session) => ({
+			path: session.href,
+			priority: "0.7",
+			changefreq: "monthly",
+		})),
+		...logicSessions.map((session) => ({
+			path: `${session.href}/check`,
+			priority: "0.6",
+			changefreq: "monthly",
+		})),
 		...chapters.map((chapter) => ({
 			path: `/js/${chapter.id}`,
 			priority: "0.8",

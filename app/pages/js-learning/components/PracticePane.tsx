@@ -27,6 +27,7 @@ export function PracticePane({ learning }: PracticePaneProps) {
     busy,
     chapter,
     checked,
+    chooseAnswer,
     code,
     completed,
     edit,
@@ -34,7 +35,6 @@ export function PracticePane({ learning }: PracticePaneProps) {
     exerciseIndex,
     exerciseTitle,
     hintLevel,
-    job,
     navigate,
     nextStep,
     output,
@@ -46,18 +46,12 @@ export function PracticePane({ learning }: PracticePaneProps) {
     ready,
     resultTab,
     results,
-    revision,
     run,
     selectedAnswer,
-    setAnswers,
     setAutoRun,
-    setBusy,
-    setChecked,
     setHintLevel,
-    setOutput,
     setResetOpen,
     setResultTab,
-    setResults,
   } = learning;
   return (
     <section className="practice-pane" aria-label="Latihan menulis kode">
@@ -153,33 +147,32 @@ export function PracticePane({ learning }: PracticePaneProps) {
               aria-label="Prediksi hasil kode"
               value={selectedAnswer}
               onValueChange={(v) => {
-                job.current?.abort();
-                revision.current++;
-                setBusy(null);
-                setAnswers((a) => ({ ...a, [exercise.id]: String(v) }));
-                setChecked(false);
-                setResults([]);
-                setOutput({});
+                chooseAnswer(String(v));
               }}
               className="prediction-options"
             >
-              {exercise.options?.map((option) => (
-                <label
-                  key={option}
-                  className={
-                    'prediction ' +
-                    (selectedAnswer === option ? 'selected' : '')
-                  }
-                >
-                  <RadioGroupItem value={option} />
-                  <code>{option}</code>
-                </label>
-              ))}
+              {exercise.options?.map((option, optionIndex) => {
+                const optionId = `prediction-${exercise.id}-${optionIndex}`;
+                return (
+                  <label
+                    key={option}
+                    htmlFor={optionId}
+                    className={
+                      'prediction ' +
+                      (selectedAnswer === option ? 'selected' : '')
+                    }
+                  >
+                    <RadioGroupItem id={optionId} value={option} />
+                    <code>{option}</code>
+                  </label>
+                );
+              })}
             </RadioGroup>
           ) : (
             <div className="run-controls">
-              <label className="auto-label">
+              <label className="auto-label" htmlFor="auto-run">
                 <Switch
+                  id="auto-run"
                   checked={autoRun}
                   onCheckedChange={setAutoRun}
                   aria-label="Jalankan kode otomatis"

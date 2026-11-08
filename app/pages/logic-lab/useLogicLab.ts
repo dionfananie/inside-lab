@@ -24,7 +24,7 @@ export default function useLogicLab() {
   });
   const [scenario, setScenario] = useState('0');
   const [announcement, setAnnouncement] = useState('');
-  const field = useRef<FormulaField>('conclusion');
+  const fieldRef = useRef<FormulaField>('conclusion');
   const premiseInput = useRef<HTMLInputElement>(null);
   const conclusionInput = useRef<HTMLInputElement>(null);
   const playgroundTitle = useRef<HTMLHeadingElement>(null);
@@ -81,15 +81,15 @@ export default function useLogicLab() {
 
   function insertSymbol(symbol: string) {
     const input =
-      field.current === 'premise'
+      fieldRef.current === 'premise'
         ? premiseInput.current
         : conclusionInput.current;
-    const text = field.current === 'premise' ? premiseText : conclusionText;
+    const text = fieldRef.current === 'premise' ? premiseText : conclusionText;
     const start = input?.selectionStart ?? text.length;
     const end = input?.selectionEnd ?? start;
     const next = text.slice(0, start) + symbol + text.slice(end);
     if (next.length > 240) return;
-    if (field.current === 'premise') setPremiseText(next);
+    if (fieldRef.current === 'premise') setPremiseText(next);
     else setConclusionText(next);
     requestAnimationFrame(() => {
       input?.focus();
@@ -134,7 +134,7 @@ export default function useLogicLab() {
     conclusionText,
     counterexamples,
     current,
-    field,
+    fieldRef,
     insertSymbol,
     modified,
     noPremise,

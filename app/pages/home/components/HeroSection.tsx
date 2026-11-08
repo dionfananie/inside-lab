@@ -15,15 +15,15 @@ export default function HeroSection({ firstChapterHref }: HeroSectionProps) {
           Belajar dengan <em>mencoba,</em> bukan sekadar membaca.
         </h1>
         <p>
-          Pahami konsep JavaScript dan logika, ubah contoh, jalankan, lalu
-          buktikan hasilnya sendiri.
+          Pilih jalur belajar, ubah contoh, jalankan, lalu buktikan hasilnya
+          sendiri.
         </p>
         <div className="home-hero-actions">
           <a className="home-button home-button-primary" href={firstChapterHref}>
             Mulai belajar JavaScript <ArrowRight size={17} />
           </a>
-          <a className="home-button home-button-secondary" href="/play">
-            <Play size={16} fill="currentColor" /> Buka Runtime JS
+          <a className="home-button home-button-secondary" href="/computational-logic">
+            <Play size={16} fill="currentColor" /> Jelajahi Computational Logic
           </a>
         </div>
         <div className="home-proof">

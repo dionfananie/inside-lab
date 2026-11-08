@@ -1004,6 +1004,10 @@
   gap: 13px;
 }
 
+.home-track-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .home-lab-card {
   min-height: 510px;
   padding: 27px;
@@ -1105,6 +1109,103 @@
   gap: 8px;
   color: var(--home-lime);
   font-size: 12px;
+}
+
+.home-track-links,
+.home-logic-links {
+  display: grid;
+  gap: 9px;
+  margin-top: 28px;
+}
+
+.home-track-links a,
+.home-logic-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: fit-content;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.home-track-links a:first-child {
+  color: var(--home-lime);
+}
+
+.home-track-links a:not(:first-child) {
+  color: #c1d1c7;
+}
+
+.home-logic-links a {
+  color: var(--home-green-bright);
+}
+
+.home-track-links a:hover,
+.home-track-links a:focus-visible,
+.home-logic-links a:hover,
+.home-logic-links a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.home-logic-curriculum {
+  position: relative;
+  isolation: isolate;
+}
+
+.home-logic-curriculum::before {
+  content: "";
+  position: absolute;
+  inset: 0 50%;
+  width: 100vw;
+  background: #fffefa;
+  transform: translateX(-50%);
+  z-index: -1;
+}
+
+.home-logic-session-list {
+  border-top: 1px solid var(--home-line);
+}
+
+.home-logic-session {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 22px;
+  padding: 25px 0;
+  border-bottom: 1px solid var(--home-line);
+}
+
+.home-logic-session-number {
+  color: var(--home-green-bright);
+  font: 650 12px var(--font-geist-mono), monospace;
+}
+
+.home-logic-session h3 {
+  margin: 0 0 7px;
+  font-size: 17px;
+  font-weight: 620;
+  letter-spacing: -0.02em;
+}
+
+.home-logic-session p {
+  max-width: 700px;
+  margin: 0;
+  color: var(--home-muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.home-logic-session-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 9px;
+  border: 1px solid #d8e1d5;
+  border-radius: 999px;
+  color: #718078;
+  font: 600 10px var(--font-geist-mono), monospace;
+  white-space: nowrap;
 }
 
 .home-truth-preview {
@@ -1583,6 +1684,16 @@
 
   .home-lab-card {
     min-height: 460px;
+  }
+
+  .home-logic-session {
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .home-logic-session-status {
+    grid-column: 2;
+    justify-self: start;
   }
 
   .home-final {

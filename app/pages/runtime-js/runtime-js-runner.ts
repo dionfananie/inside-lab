@@ -6,6 +6,10 @@ export type RuntimeEntry = {
   line?: number;
 };
 
+type RuntimeMessage =
+  | { type: "entry"; entry: RuntimeEntry }
+  | { type: "done" | "error" };
+
 export function compileRuntimeSource(source: string, capture: string) {
   const tree = parse(source, {
     ecmaVersion: "latest",
@@ -138,15 +142,16 @@ export function createRuntimeRunner(
     }
   }, 5000);
 
-  worker.onmessage = (event) => {
-    if (event.data.type === "entry") {
-      onEntry(event.data.entry);
-      if (event.data.entry.kind === "error") failed = true;
+  worker.onmessage = (event: MessageEvent<RuntimeMessage>) => {
+    const data = event.data;
+    if (data.type === "entry") {
+      onEntry(data.entry);
+      if (data.entry.kind === "error") failed = true;
     }
-    if (event.data.type === "done" || event.data.type === "error") {
+    if (data.type === "done" || data.type === "error") {
       completed = true;
       onState(
-        failed || event.data.type === "error" ? "Error" : "Ready",
+        failed || data.type === "error" ? "Error" : "Ready",
         performance.now() - started,
       );
     }

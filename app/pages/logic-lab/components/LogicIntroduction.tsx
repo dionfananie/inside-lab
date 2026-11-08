@@ -1,5 +1,5 @@
 import { BookOpen } from 'lucide-react';
-import { operators } from '../data';
+import { accessScenarios, operators } from '../data';
 
 export default function LogicIntroduction() {
   return (
@@ -34,6 +34,16 @@ export default function LogicIntroduction() {
                 <strong>{label}</strong>
                 <span>{help}</span>
               </p>
+            ))}
+          </div>
+          <p><strong>Contoh skenario akses:</strong></p>
+          <div className="logic-scenario-list">
+            {accessScenarios.map((scenario) => (
+              <div className="logic-scenario-card" key={scenario.title}>
+                <strong>{scenario.title}</strong>
+                <span>{scenario.description}</span>
+                <code>{scenario.formula}</code>
+              </div>
             ))}
           </div>
           <p>

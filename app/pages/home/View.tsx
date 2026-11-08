@@ -3,9 +3,10 @@ import FinalSection from "./components/FinalSection";
 import HeroSection from "./components/HeroSection";
 import HomeFooter from "./components/HomeFooter";
 import HomeHeader from "./components/HomeHeader";
-import LabsSection from "./components/LabsSection";
+import LogicCurriculumSection from "./components/LogicCurriculumSection";
 import MethodSection from "./components/MethodSection";
 import MetricsSection from "./components/MetricsSection";
+import TracksSection from "./components/TracksSection";
 import type { HomePageProps } from "./types";
 import useHome from "./useHome";
 
@@ -15,7 +16,7 @@ export default function HomePage(props: HomePageProps) {
     firstExercises,
     totalParts,
     totalExercises,
-    ruleCount,
+    logicSessionCount,
   } = props;
   const {
     firstChapterHref,
@@ -39,7 +40,7 @@ export default function HomePage(props: HomePageProps) {
         chapterCount={chapters.length}
         totalParts={totalParts}
         totalExercises={totalExercises}
-        ruleCount={ruleCount}
+        logicSessionCount={logicSessionCount}
       />
       <MethodSection
         firstExercises={firstExercises}
@@ -48,10 +49,11 @@ export default function HomePage(props: HomePageProps) {
         setSelectedStage={setSelectedStage}
       />
       <CurriculumSection chapters={chapters} />
-      <LabsSection
+      <TracksSection
         firstChapterHref={firstChapterHref}
         totalExercises={totalExercises}
       />
+      <LogicCurriculumSection />
       <FinalSection firstChapterHref={firstChapterHref} />
       <HomeFooter firstChapterHref={firstChapterHref} />
     </main>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { X } from 'lucide-react';
 import type useSatSolver from '../useSatSolver';
 
@@ -9,6 +9,11 @@ type ClauseListProps = {
 export default function ClauseList({ sat }: ClauseListProps) {
   const { clauses, removeClause, statementTotal, updateClause, validation } = sat;
   const [editingId, setEditingId] = useState<string | null>(null);
+  const editInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (editingId) editInputRef.current?.focus();
+  }, [editingId]);
 
   if (clauses.length === 0) {
     return (
@@ -47,7 +52,7 @@ export default function ClauseList({ sat }: ClauseListProps) {
               </span>
               {isEditing ? (
                 <input
-                  autoFocus
+                  ref={editInputRef}
                   value={clause.raw}
                   onChange={(event) => updateClause(clause.id, event.target.value)}
                   onBlur={() => setEditingId(null)}

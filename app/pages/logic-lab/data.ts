@@ -27,3 +27,16 @@ export const formulaSymbols = [
   '⊤',
   '⊥',
 ];
+
+export const accessScenarios = [
+  {
+    title: 'Login dasar',
+    description: 'Akses diberikan jika pengguna sudah login dan memiliki izin.',
+    formula: '(login ∧ izin) → akses',
+  },
+  {
+    title: 'Akses admin',
+    description: 'Admin dapat masuk meskipun pemeriksaan izin biasa belum selesai.',
+    formula: 'admin ∨ (login ∧ izin) → akses',
+  },
+] as const;

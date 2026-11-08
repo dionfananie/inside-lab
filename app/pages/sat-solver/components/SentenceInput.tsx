@@ -25,7 +25,9 @@ export default function SentenceInput({ sat }: SentenceInputProps) {
       <h2 id="sat-input-title">Klausa DIMACS CNF</h2>
       <p className="logic-help">
         Satu klausa berisi literal angka dan selalu diakhiri <code>0</code>.
-        Pisahkan beberapa klausa dengan baris baru atau titik koma.
+        Pisahkan beberapa klausa dengan baris baru atau titik koma. Kamu juga
+        bisa menempelkan header <code>p cnf &lt;jumlah variabel&gt;
+        &lt;jumlah klausa&gt;</code> beserta daftar klausanya.
       </p>
       <textarea
         ref={numericSourceInput}

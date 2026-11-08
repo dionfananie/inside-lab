@@ -16,6 +16,7 @@ export type DimacsValidation = {
 export function parseDimacsClauses(
   rows: NumericClause[],
   variableLimit = 26,
+  declaredVariables = 0,
 ): DimacsValidation {
   const errors: string[] = [];
   const clauses: number[][] = [];
@@ -59,7 +60,69 @@ export function parseDimacsClauses(
   });
 
   if (errors.length > 0) return { problem: null, errors };
-  return { problem: { variables: maxVariable, clauses }, errors };
+  return {
+    problem: {
+      variables: Math.max(maxVariable, declaredVariables),
+      clauses,
+    },
+    errors,
+  };
+}
+
+export type ParsedDimacsInput = {
+  clauses: number[][];
+  declaredVariables: number;
+};
+
+export function parseDimacsInput(text: string): ParsedDimacsInput {
+  const tokens: string[] = [];
+  let declaredVariables = 0;
+  let hasHeader = false;
+
+  for (const rawLine of text.split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (!line) continue;
+    if (line.startsWith('c')) continue;
+
+    if (/^p\s+cnf\b/i.test(line)) {
+      if (hasHeader) {
+        throw new Error('Hanya boleh ada satu header DIMACS.');
+      }
+      const match = /^p\s+cnf\s+(\d+)\s+(\d+)\s*$/i.exec(line);
+      if (!match) {
+        throw new Error(
+          'Header DIMACS harus berformat "p cnf <jumlah variabel> <jumlah klausa>".',
+        );
+      }
+      hasHeader = true;
+      declaredVariables = Number(match[1]);
+      continue;
+    }
+
+    tokens.push(...line.split(/[\s;]+/).filter(Boolean));
+  }
+
+  const clauses: number[][] = [];
+  let current: number[] = [];
+
+  tokens.forEach((token) => {
+    const value = Number(token);
+    if (!Number.isInteger(value)) {
+      throw new Error('Klausa DIMACS hanya boleh berisi angka dan 0.');
+    }
+    if (value === 0) {
+      clauses.push(current);
+      current = [];
+      return;
+    }
+    current.push(value);
+  });
+
+  if (current.length > 0) {
+    throw new Error('Setiap klausa DIMACS harus diakhiri angka 0.');
+  }
+
+  return { clauses, declaredVariables };
 }
 
 export function formatDimacs(problem: DimacsProblem): string {
