@@ -5,6 +5,8 @@ import SessionOneView from "./sessions/session-1";
 import SessionTwoView from "./sessions/session-2";
 import SessionThreeView from "./sessions/session-3";
 import SessionFourView from "./sessions/session-4";
+import SessionFiveView from "./sessions/session-5";
+import SessionSixView from "./sessions/session-6";
 
 type SessionViewProps = { sessionId: number };
 
@@ -13,6 +15,8 @@ export default function ComputationalLogicSession({ sessionId }: SessionViewProp
   if (sessionId === 2) return <SessionTwoView />;
   if (sessionId === 3) return <SessionThreeView />;
   if (sessionId === 4) return <SessionFourView />;
+  if (sessionId === 5) return <SessionFiveView />;
+  if (sessionId === 6) return <SessionSixView />;
 
   const session = logicSessions.find((item) => item.session === sessionId);
   const lesson = sessionLessons[sessionId];

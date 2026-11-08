@@ -2,6 +2,7 @@ import { ArrowLeft, ArrowRight, BookOpen, CheckCircle2, Lightbulb } from "lucide
 
 import CodeBlock from "../session-1/components/CodeBlock";
 import SessionNavigation from "../session-1/components/SessionNavigation";
+import TruthTable from "../../components/TruthTable";
 import "../session-1/session-1.css";
 import {
   atomicCompoundTable,
@@ -23,6 +24,24 @@ function SectionHeading({ number, title, id }: { number: string; title: string; 
       <span>{number}</span>
       <h2 id={id}>{title}</h2>
     </div>
+  );
+}
+
+function HighlightedMeaning({ meaning }: { meaning: string }) {
+  const terms = ["antecedent", "consequent"];
+  const regex = new RegExp(`(${terms.join("|")})`, "gi");
+  const parts = meaning.split(regex);
+
+  return (
+    <>
+      {parts.map((part, index) =>
+        terms.some((term) => term.toLowerCase() === part.toLowerCase()) ? (
+          <mark key={index}>{part}</mark>
+        ) : (
+          part
+        ),
+      )}
+    </>
   );
 }
 
@@ -80,7 +99,7 @@ export default function SessionTwoView() {
             <p>Setelah menyelesaikan sesi ini, mahasiswa diharapkan mampu:</p>
             <ol className="session-one-objectives">
               {sessionTwoObjectives.map((objective) => (
-                <li key={objective}><CheckCircle2 size={16} />{objective}</li>
+                <li key={objective}><ArrowRight size={16} />{objective}</li>
               ))}
             </ol>
           </section>
@@ -182,8 +201,8 @@ const isRoadWet = false;`}</CodeBlock>
             {connectives.map((connective) => (
               <div className="session-one-connective" key={connective.id}>
                 <h3>{connective.name}</h3>
-                <p><code>{connective.symbol}</code> — {connective.meaning}</p>
-                <DataTable caption={`Tabel kebenaran ${connective.name}`} headers={connective.truthTable.headers} rows={connective.truthTable.rows} />
+                <p><code>{connective.symbol}</code> — <HighlightedMeaning meaning={connective.meaning} /></p>
+                <TruthTable caption={`Truth table ${connective.name}`} headers={connective.truthTable.headers} rows={connective.truthTable.rows} />
                 {connective.code && <CodeBlock>{connective.code}</CodeBlock>}
                 {connective.note && <p>{connective.note}</p>}
               </div>
@@ -194,7 +213,7 @@ const isRoadWet = false;`}</CodeBlock>
               OR klasik bersifat inclusive. XOR (<code>P ⊕ Q</code>) bernilai TRUE
               hanya jika tepat satu proposisi bernilai TRUE.
             </p>
-            <DataTable caption="Perbandingan OR dan XOR" headers={xorTable.headers} rows={xorTable.rows} />
+            <TruthTable caption="Perbandingan OR dan XOR" headers={xorTable.headers} rows={xorTable.rows} description="XOR bernilai TRUE hanya jika tepat satu proposisi bernilai TRUE." />
             <div className="session-one-callout">
               <strong>Contoh</strong>
               <p>

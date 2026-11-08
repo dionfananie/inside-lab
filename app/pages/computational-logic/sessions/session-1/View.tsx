@@ -10,6 +10,7 @@ import {
 } from "./data";
 import CodeBlock from "./components/CodeBlock";
 import SessionNavigation from "./components/SessionNavigation";
+import TruthTable from "../../components/TruthTable";
 import "./session-1.css";
 
 function SectionHeading({ number, title, id }: { number: string; title: string; id: string }) {
@@ -76,7 +77,7 @@ export default function SessionOneView() {
             <p>Setelah menyelesaikan sesi ini, mahasiswa diharapkan mampu:</p>
             <ol className="session-one-objectives">
               {sessionOneObjectives.map((objective) => (
-                <li key={objective}><CheckCircle2 size={16} />{objective}</li>
+                <li key={objective}><ArrowRight size={16} />{objective}</li>
               ))}
             </ol>
           </section>
@@ -222,7 +223,7 @@ JalanBasah = TRUE`}</CodeBlock>
               <article><span>A / EXPERT SYSTEM</span><h4>Aturan untuk rekomendasi.</h4><p>Sistem troubleshooting komputer memakai aturan seperti: IF computer_does_not_turn_on AND power_indicator_is_off THEN check_power_cable.</p></article>
               <article><span>B / SAT SOLVER</span><h4>Mencari nilai yang memenuhi formula.</h4><p>SAT Solver menentukan apakah formula seperti (P OR Q) AND (NOT P OR R) dapat dibuat TRUE. Teknologi ini dipakai untuk verifikasi software dan hardware, scheduling, serta constraint solving.</p></article>
               <article><span>C / AUTOMATED THEOREM PROVING</span><h4>Membuktikan kesimpulan dari premis.</h4><p>Komputer dapat menurunkan Q dari premis P → Q dan P menggunakan aturan inferensi yang telah didefinisikan.</p></article>
-              <article><span>D / KNOWLEDGE REPRESENTATION</span><h4>Menyimpan pengetahuan sebagai fakta dan aturan.</h4><p>Fakta “Dion adalah mahasiswa” dan aturan “semua mahasiswa wajib mengikuti ujian” menghasilkan kesimpulan “Dion wajib mengikuti ujian”.</p></article>
+              <article><span>D / KNOWLEDGE REPRESENTATION</span><h4>Menyimpan pengetahuan sebagai fakta dan aturan.</h4><p>Fakta “Teddy adalah mahasiswa” dan aturan “semua mahasiswa wajib mengikuti ujian” menghasilkan kesimpulan “Teddy wajib mengikuti ujian”.</p></article>
             </div>
 
             <h3>Apakah semua AI menggunakan logika formal?</h3>
@@ -292,7 +293,7 @@ P → Q`}</CodeBlock></div>
             <CodeBlock>{`P = Saya makan durian.
 Q = Saya mengalami sakit kepala.`}</CodeBlock>
             <p>Formula tersebut bermakna: “Jika saya makan durian, maka saya mengalami sakit kepala.”</p>
-            <DataTable caption="Tabel kebenaran implikasi P → Q" headers={["P", "Q", "P → Q"]} rows={implicationTruthTable} />
+            <TruthTable caption="Tabel kebenaran implikasi P → Q" headers={["P", "Q", "P → Q"]} rows={implicationTruthTable} description="Implikasi hanya bernilai FALSE ketika P benar dan Q salah." />
             <p>
               Formula hanya bernilai FALSE ketika P benar dan Q salah. Implikasi
               menyatakan bahwa setiap kali P terjadi, Q harus benar. Jika P tidak

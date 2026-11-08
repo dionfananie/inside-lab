@@ -50,6 +50,7 @@ export const connectiveTruthTables = [
   {
     name: "Negation (NOT)",
     symbol: "¬P",
+    description: "Negation membalik nilai kebenaran proposisi.",
     headers: ["P", "¬P"],
     rows: [
       ["T", "F"],
@@ -59,6 +60,7 @@ export const connectiveTruthTables = [
   {
     name: "Conjunction (AND)",
     symbol: "P ∧ Q",
+    description: "AND bernilai TRUE hanya jika kedua proposisi bernilai TRUE.",
     headers: ["P", "Q", "P ∧ Q"],
     rows: [
       ["T", "T", "T"],
@@ -70,6 +72,7 @@ export const connectiveTruthTables = [
   {
     name: "Disjunction (OR)",
     symbol: "P ∨ Q",
+    description: "OR bernilai TRUE jika minimal satu proposisi bernilai TRUE.",
     headers: ["P", "Q", "P ∨ Q"],
     rows: [
       ["T", "T", "T"],
@@ -81,6 +84,7 @@ export const connectiveTruthTables = [
   {
     name: "Implication",
     symbol: "P → Q",
+    description: "Implikasi bernilai FALSE hanya ketika P TRUE dan Q FALSE.",
     headers: ["P", "Q", "P → Q"],
     rows: [
       ["T", "T", "T"],
@@ -92,6 +96,7 @@ export const connectiveTruthTables = [
   {
     name: "Biconditional",
     symbol: "P ↔ Q",
+    description: "Biconditional bernilai TRUE ketika P dan Q memiliki nilai kebenaran yang sama.",
     headers: ["P", "Q", "P ↔ Q"],
     rows: [
       ["T", "T", "T"],
@@ -103,6 +108,8 @@ export const connectiveTruthTables = [
 ];
 
 export const complexTruthTable = {
+  description:
+    "Formula hanya bernilai FALSE pada baris ketika P TRUE, Q TRUE, dan R FALSE.",
   headers: ["P", "Q", "R", "P ∧ Q", "(P ∧ Q) → R"],
   rows: [
     ["T", "T", "T", "T", "T"],
@@ -149,6 +156,8 @@ export const complexityTable = [
 ];
 
 export const registrasiTruthTable = {
+  description:
+    "Registrasi diizinkan (kolom terakhir TRUE) hanya ketika minimal satu kontak tersedia dan pengguna belum terdaftar.",
   headers: ["P", "Q", "R", "P ∨ Q", "¬R", "(P ∨ Q) ∧ ¬R"],
   rows: [
     ["T", "T", "T", "T", "F", "F"],

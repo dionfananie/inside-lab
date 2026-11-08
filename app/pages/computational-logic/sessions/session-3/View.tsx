@@ -2,6 +2,7 @@ import { ArrowLeft, ArrowRight, BookOpen, CheckCircle2, Lightbulb } from "lucide
 
 import CodeBlock from "../session-1/components/CodeBlock";
 import SessionNavigation from "../session-1/components/SessionNavigation";
+import TruthTable from "../../components/TruthTable";
 import "../session-1/session-1.css";
 import {
   classificationTable,
@@ -82,7 +83,7 @@ export default function SessionThreeView() {
             <SectionHeading number="01" title="Tujuan belajar" id="tujuan" />
             <ol className="session-one-objectives">
               {sessionThreeObjectives.map((objective) => (
-                <li key={objective}><CheckCircle2 size={16} />{objective}</li>
+                <li key={objective}><ArrowRight size={16} />{objective}</li>
               ))}
             </ol>
           </section>
@@ -141,7 +142,7 @@ export default function SessionThreeView() {
               <div className="session-one-connective" key={table.name}>
                 <h3>{table.name}</h3>
                 <p><code>{table.symbol}</code></p>
-                <DataTable caption={`Truth table ${table.name}`} headers={table.headers} rows={table.rows} />
+                <TruthTable caption={`Truth table ${table.name}`} headers={table.headers} rows={table.rows} description={table.description} />
               </div>
             ))}
           </section>
@@ -153,7 +154,7 @@ export default function SessionThreeView() {
               memecahnya menjadi bagian dalam kurung terlebih dahulu, lalu hasil
               implikasi.
             </p>
-            <DataTable caption="Truth table (P ∧ Q) → R" headers={complexTruthTable.headers} rows={complexTruthTable.rows} />
+            <TruthTable caption="Truth table (P ∧ Q) → R" headers={complexTruthTable.headers} rows={complexTruthTable.rows} description={complexTruthTable.description} />
             <div className="session-one-example">
               <p>Baris kedua (P=T, Q=T, R=F): P ∧ Q = TRUE, lalu TRUE → FALSE = FALSE.</p>
             </div>
@@ -235,30 +236,49 @@ const resultB = (p || q) && r;`}</CodeBlock>
 
           <section className="session-one-section" aria-labelledby="komputer">
             <SectionHeading number="11" title="Dari truth table ke komputer" id="komputer" />
-            <p>Komputer dapat membuat truth table secara otomatis:</p>
-            <CodeBlock>{`function generateAssignments(variables) {
-  const total = 2 ** variables.length;
-  const assignments = [];
+            <p>
+              Komputer membuat truth table secara otomatis lewat tiga langkah.
+              Berikut ini versi pseudocode yang mudah dibaca tanpa perlu paham
+              bahasa pemrograman.
+            </p>
 
-  for (let i = 0; i < total; i++) {
-    const assignment = {};
-    variables.forEach((variable, index) => {
-      const bit = (i >> (variables.length - index - 1)) & 1;
-      assignment[variable] = bit === 1;
-    });
-    assignments.push(assignment);
-  }
+            <h3>Langkah 1 — Menghasilkan semua kombinasi</h3>
+            <CodeBlock>{`Untuk setiap proposisi (misalnya P, Q, R):
 
-  return assignments;
-}`}</CodeBlock>
-            <CodeBlock>{`function evaluateFormula({ P, Q, R }) {
-  return !(P && Q) || R; // ¬(P ∧ Q) ∨ R
-}`}</CodeBlock>
-            <CodeBlock>{`function classifyFormula(results) {
-  if (results.every(Boolean)) return "TAUTOLOGY";
-  if (results.every((result) => !result)) return "CONTRADICTION";
-  return "CONTINGENCY";
-}`}</CodeBlock>
+  1. Hitung jumlah kombinasi:
+     jumlah = 2 pangkat (banyaknya proposisi)
+
+  2. Untuk angka 0 sampai (jumlah - 1):
+     - Ubah angka tersebut menjadi deretan bit (0/1).
+     - 0 berarti FALSE, 1 berarti TRUE.
+     - Petakan setiap proposisi ke bit yang sesuai.
+     - Simpan sebagai satu baris kombinasi.
+
+Contoh:
+  P, Q → 4 kombinasi (00, 01, 10, 11)`}</CodeBlock>
+
+            <h3>Langkah 2 — Mengevaluasi formula</h3>
+            <CodeBlock>{`Untuk setiap baris kombinasi, evaluasi formula
+(P ∧ Q) → R dengan urutan:
+
+  1. Hitung bagian dalam kurung dahulu:
+     P ∧ Q = TRUE hanya jika P DAN Q sama-sama TRUE.
+
+  2. Hitung implikasi:
+     (P ∧ Q) → R bernilai FALSE HANYA JIKA
+     (P ∧ Q) = TRUE dan R = FALSE.
+     Selain itu hasilnya TRUE.
+
+  3. Simpan hasil evaluasi pada baris tersebut.`}</CodeBlock>
+
+            <h3>Langkah 3 — Mengklasifikasikan formula</h3>
+            <CodeBlock>{`Setelah semua baris selesai dievaluasi:
+
+  Jika SEMUA hasil = TRUE  → TAUTOLOGY
+  Jika SEMUA hasil = FALSE → CONTRADICTION
+  Jika hasilnya campuran   → CONTINGENCY
+     (ada yang TRUE dan ada yang FALSE)`}</CodeBlock>
+
             <p>
               Jumlah baris truth table bertambah secara eksponensial (2ⁿ).
               Untuk formula kecil ini efisien, tetapi formula besar lebih baik
@@ -272,7 +292,7 @@ const resultB = (p || q) && r;`}</CodeBlock>
               Aturan: “Pengguna dapat registrasi jika memiliki email atau nomor
               telepon, dan belum terdaftar.” Formula: <code>(P ∨ Q) ∧ ¬R</code>.
             </p>
-            <DataTable caption="Truth table sistem registrasi" headers={registrasiTruthTable.headers} rows={registrasiTruthTable.rows} />
+            <TruthTable caption="Truth table sistem registrasi" headers={registrasiTruthTable.headers} rows={registrasiTruthTable.rows} description={registrasiTruthTable.description} />
             <CodeBlock>{`function canRegister({ hasEmail, hasPhone, isRegistered }) {
   return (hasEmail || hasPhone) && !isRegistered;
 }`}</CodeBlock>

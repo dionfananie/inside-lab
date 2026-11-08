@@ -2,6 +2,7 @@ import { ArrowLeft, ArrowRight, BookOpen, CheckCircle2, Lightbulb } from "lucide
 
 import CodeBlock from "../session-1/components/CodeBlock";
 import SessionNavigation from "../session-1/components/SessionNavigation";
+import TruthTable from "../../components/TruthTable";
 import "../session-1/session-1.css";
 import {
   commonMistakes,
@@ -77,7 +78,7 @@ export default function SessionFourView() {
             <SectionHeading number="01" title="Tujuan belajar" id="tujuan" />
             <ol className="session-one-objectives">
               {sessionFourObjectives.map((objective) => (
-                <li key={objective}><CheckCircle2 size={16} />{objective}</li>
+                <li key={objective}><ArrowRight size={16} />{objective}</li>
               ))}
             </ol>
           </section>
@@ -120,10 +121,10 @@ const resultB = !(p && !q);`}</CodeBlock>
           <section className="session-one-section" aria-labelledby="pembuktian">
             <SectionHeading number="04" title="Membuktikan equivalence dengan truth table" id="pembuktian" />
             <p>Buktikan <code>P → Q ≡ ¬P ∨ Q</code> dengan membandingkan truth table.</p>
-            <DataTable caption="Pembuktian P → Q ≡ ¬P ∨ Q" headers={equivalenceProofTable.headers} rows={equivalenceProofTable.rows} />
+            <TruthTable caption="Pembuktian P → Q ≡ ¬P ∨ Q" headers={equivalenceProofTable.headers} rows={equivalenceProofTable.rows} description="Kolom P → Q dan ¬P ∨ Q selalu sama, sehingga kedua formula ekuivalen." />
             <p>Kolom <code>P → Q</code> dan <code>¬P ∨ Q</code> selalu sama, sehingga terbukti ekuivalen.</p>
             <h3>Jika hasilnya berbeda</h3>
-            <DataTable caption="P ∧ Q vs P ∨ Q" headers={notEquivalentTable.headers} rows={notEquivalentTable.rows} />
+            <TruthTable caption="P ∧ Q vs P ∨ Q" headers={notEquivalentTable.headers} rows={notEquivalentTable.rows} description="Ada baris yang hasilnya berbeda, sehingga kedua formula tidak ekuivalen." />
             <p>
               <code>P ∧ Q</code> dan <code>P ∨ Q</code> tidak ekuivalen karena ada
               baris yang berbeda.
@@ -153,7 +154,7 @@ const resultB = !(p && !q);`}</CodeBlock>
             <div className="session-one-example">
               <p><code>{`{P → Q, P} ⊨ Q`}</code></p>
             </div>
-            <DataTable caption="Pembuktian logical consequence" headers={consequenceProofTable.headers} rows={consequenceProofTable.rows} />
+            <TruthTable caption="Pembuktian logical consequence" headers={consequenceProofTable.headers} rows={consequenceProofTable.rows} description="Hanya baris pertama yang membuat seluruh premis TRUE, dan pada baris itu Q juga TRUE." />
             <p>
               Hanya baris pertama yang membuat seluruh premis TRUE, dan pada baris
               itu Q juga TRUE. Jadi tidak ada counterexample.
@@ -173,7 +174,8 @@ const resultB = !(p && !q);`}</CodeBlock>
             <DataTable caption="Perbedaan logical equivalence dan logical consequence" headers={["Aspek", "Logical equivalence", "Logical consequence"]} rows={equivalenceConsequenceTable} />
             <p>
               Dua formula P dan Q ekuivalen jika <code>P ⊨ Q</code> dan{" "}
-              <code>Q ⊨ P</code>. Jadi equivalence adalah entailment dua arah.
+              <code>Q ⊨ P</code>. Singkatnya, ekuivalen berarti kedua formula
+              saling mengakibatkan satu sama lain.
             </p>
           </section>
 
@@ -193,13 +195,48 @@ P
 Q
 ∴ P`}</CodeBlock>
             <p>Ini adalah affirming the consequent, pola yang tidak valid.</p>
-            <div className="session-one-callout">
-              <strong>Dua pola yang perlu diwaspadai</strong>
-              <p>
-                <strong>Affirming the consequent:</strong> <code>P → Q, Q ∴ P</code>.<br />
-                <strong>Denying the antecedent:</strong> <code>P → Q, ¬P ∴ ¬Q</code>.
-              </p>
+
+            <h3>Dua pola yang perlu diwaspadai</h3>
+
+            <h4>A. Affirming the Consequent</h4>
+            <p>
+              Bentuk: <code>P → Q, Q ∴ P</code>.
+            </p>
+            <p>
+              Pola ini menyimpulkan P hanya karena Q benar. Padahal Q bisa
+              menjadi benar karena sebab lain, bukan hanya karena P. Jadi Q yang
+              benar tidak cukup membuktikan bahwa P benar.
+            </p>
+            <div className="session-one-example">
+              <p>Jika hujan, maka jalanan basah.</p>
+              <p>Jalanan basah.</p>
+              <p>Maka, hujan.</p>
             </div>
+            <p>
+              Jalanan bisa basah karena disiram atau sebab lain, bukan karena
+              hujan. <strong>Counterexample:</strong> P = FALSE dan Q = TRUE
+              membuat kedua premis TRUE, tetapi kesimpulan P = FALSE.
+            </p>
+
+            <h4>B. Denying the Antecedent</h4>
+            <p>
+              Bentuk: <code>P → Q, ¬P ∴ ¬Q</code>.
+            </p>
+            <p>
+              Pola ini menyimpulkan ¬Q karena P tidak terjadi. Padahal Q tetap
+              bisa terjadi akibat sebab lain, meskipun P tidak terjadi. Jadi
+              P yang salah tidak cukup membuktikan bahwa Q juga salah.
+            </p>
+            <div className="session-one-example">
+              <p>Jika hujan, maka jalanan basah.</p>
+              <p>Tidak hujan.</p>
+              <p>Maka, jalanan tidak basah.</p>
+            </div>
+            <p>
+              Jalanan tetap bisa basah meskipun tidak hujan. Kedua pola ini tidak
+              valid dalam logika klasik karena tidak menjamin kesimpulan
+              benar-benar mengikuti premis.
+            </p>
           </section>
 
           <section className="session-one-section" aria-labelledby="soundness">

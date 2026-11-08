@@ -464,6 +464,28 @@
   margin: 0 0 10px;
 }
 
+.session-one-connective mark {
+  background: #eaf3d8;
+  color: #204c39;
+  font-weight: 650;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.session-one-combination-note {
+  margin: -8px 0 16px;
+  color: #718078;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.session-one-truth-description {
+  margin: 0 0 10px;
+  color: #526357;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
 .session-one-check-cta h3 {
   margin: 0 0 8px;
   color: #17231e;

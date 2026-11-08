@@ -9,6 +9,10 @@ import { knowledgeCheckGroups as sessionThreeGroups } from "../sessions/session-
 import { answerRubrics as sessionThreeRubrics } from "../sessions/session-3/rubrics";
 import { knowledgeCheckGroups as sessionFourGroups } from "../sessions/session-4/data";
 import { answerRubrics as sessionFourRubrics } from "../sessions/session-4/rubrics";
+import { knowledgeCheckGroups as sessionFiveGroups } from "../sessions/session-5/data";
+import { answerRubrics as sessionFiveRubrics } from "../sessions/session-5/rubrics";
+import { knowledgeCheckGroups as sessionSixGroups } from "../sessions/session-6/data";
+import { answerRubrics as sessionSixRubrics } from "../sessions/session-6/rubrics";
 import type { AnswerRubric } from "../sessions/session-1/rubrics";
 
 export type { KnowledgeCheckGroup, KnowledgeCheckQuestion } from "../sessions/session-1/data";
@@ -24,6 +28,8 @@ export const checkBySession: Record<number, SessionCheck> = {
   2: { groups: sessionTwoGroups, rubrics: sessionTwoRubrics },
   3: { groups: sessionThreeGroups, rubrics: sessionThreeRubrics },
   4: { groups: sessionFourGroups, rubrics: sessionFourRubrics },
+  5: { groups: sessionFiveGroups, rubrics: sessionFiveRubrics },
+  6: { groups: sessionSixGroups, rubrics: sessionSixRubrics },
 };
 
 export function getCheck(sessionId: number) {

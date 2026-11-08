@@ -129,7 +129,7 @@ console.log(canRegister); // true`,
     id: "implication",
     name: "Implication (IF...THEN)",
     symbol: "P → Q",
-    meaning: "\u201CJika P, maka Q.\u201D P disebut antecedent, Q disebut consequent.",
+    meaning: "\u201CJika P, maka Q.\u201D P disebut antecedent (syarat atau sebab), Q disebut consequent (akibat).",
     trueWhen: "Kecuali P TRUE dan Q FALSE",
     truthTable: {
       headers: ["P", "Q", "P → Q"],

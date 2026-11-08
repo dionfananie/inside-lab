@@ -384,7 +384,7 @@ Data jalur dan 6 sesi disimpan di `app/pages/home/data.ts` agar homepage tidak p
 - [ ] Dukung soal pilihan ganda dan isian singkat dengan auto-check (baru isian singkat).
 - [x] Tambahkan mode fokus + progress + skor di halaman check.
 - [x] Tambahkan meta dan sitemap untuk route `/check`.
-- [ ] Terapkan pola yang sama ke sesi 2–6 secara bertahap (sesi 2, 3, 4 sudah selesai; sesi 5–6 masih placeholder).
+- [ ] Terapkan pola yang sama ke sesi 2–6 secara bertahap (semua sesi 1–6 sudah selesai).
 
 ### Fase 5 — Verifikasi
 
