@@ -8,11 +8,12 @@ type SessionSection = {
 
 type SessionNavigationProps = {
   sections: SessionSection[];
+  storageKey?: string;
 };
 
-const storageKey = "inside-lab:computational-logic:session-1:read-sections:v1";
+const defaultStorageKey = "inside-lab:computational-logic:session-1:read-sections:v1";
 
-export default function SessionNavigation({ sections }: SessionNavigationProps) {
+export default function SessionNavigation({ sections, storageKey = defaultStorageKey }: SessionNavigationProps) {
   const [activeSection, setActiveSection] = useState(sections[0]?.id ?? "");
   const [readSections, setReadSections] = useState<string[]>([]);
   const [showBackToTop, setShowBackToTop] = useState(false);

@@ -1,15 +1,15 @@
 import { ArrowLeft } from "lucide-react";
 
 import type { LogicSession } from "../types";
-import type { KnowledgeCheckGroup } from "../sessions/session-1/data";
+import type { SessionCheck } from "./data";
 import KnowledgeCheck from "./KnowledgeCheck";
 
 type CheckPageProps = {
   session: LogicSession;
-  groups?: KnowledgeCheckGroup[];
+  check?: SessionCheck;
 };
 
-export default function CheckPage({ session, groups }: CheckPageProps) {
+export default function CheckPage({ session, check }: CheckPageProps) {
   const sessionHref = `/computational-logic/session/${session.session}`;
 
   return (
@@ -31,8 +31,13 @@ export default function CheckPage({ session, groups }: CheckPageProps) {
       </section>
 
       <div className="check-body">
-        {groups ? (
-          <KnowledgeCheck groups={groups} sessionHref={sessionHref} sessionId={session.session} />
+        {check ? (
+          <KnowledgeCheck
+            groups={check.groups}
+            rubrics={check.rubrics}
+            sessionHref={sessionHref}
+            sessionId={session.session}
+          />
         ) : (
           <div className="check-placeholder">
             <h2>Knowledge check sedang disiapkan</h2>

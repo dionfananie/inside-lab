@@ -7,7 +7,7 @@ import type {
   KnowledgeCheckGroup,
   KnowledgeCheckQuestion,
 } from "../sessions/session-1/data";
-import { answerRubrics } from "../sessions/session-1/rubrics";
+import type { AnswerRubric } from "../sessions/session-1/rubrics";
 
 type EvaluationLevel = "empty" | "short" | "needs-work" | "fair" | "good" | "excellent";
 
@@ -44,8 +44,12 @@ function includesTerm(normalized: string, compact: string, term: string) {
   );
 }
 
-function evaluateAnswer(question: KnowledgeCheckQuestion, answer: string): Evaluation | null {
-  const rubric = answerRubrics[question.number];
+function evaluateAnswer(
+  question: KnowledgeCheckQuestion,
+  answer: string,
+  rubrics: Record<number, AnswerRubric>,
+): Evaluation | null {
+  const rubric = rubrics[question.number];
   if (!rubric) return null;
 
   const normalized = normalize(answer);
@@ -88,11 +92,12 @@ function evaluateAnswer(question: KnowledgeCheckQuestion, answer: string): Evalu
 
 type KnowledgeCheckProps = {
   groups: KnowledgeCheckGroup[];
+  rubrics: Record<number, AnswerRubric>;
   sessionHref: string;
   sessionId: number;
 };
 
-export default function KnowledgeCheck({ groups, sessionHref, sessionId }: KnowledgeCheckProps) {
+export default function KnowledgeCheck({ groups, rubrics, sessionHref, sessionId }: KnowledgeCheckProps) {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [evaluations, setEvaluations] = useState<Record<number, Evaluation>>({});
   const [hasStarted, setHasStarted] = useState(false);
@@ -114,7 +119,7 @@ export default function KnowledgeCheck({ groups, sessionHref, sessionId }: Knowl
   }
 
   function checkAnswer(question: KnowledgeCheckQuestion) {
-    const evaluation = evaluateAnswer(question, answers[question.number] ?? "");
+    const evaluation = evaluateAnswer(question, answers[question.number] ?? "", rubrics);
     if (!evaluation) return;
     setEvaluations((current) => ({ ...current, [question.number]: evaluation }));
   }
@@ -240,7 +245,7 @@ export default function KnowledgeCheck({ groups, sessionHref, sessionId }: Knowl
                   <div className={`quiz-result is-${evaluation.level}`}>
                     <div className="quiz-result-head">
                       <strong>{evaluation.label}</strong>
-                      <span>{evaluation.matched.length}/{answerRubrics[question.number].concepts.length} konsep</span>
+                      <span>{evaluation.matched.length}/{rubrics[question.number].concepts.length} konsep</span>
                     </div>
                     <div className="quiz-result-track" aria-hidden="true">
                       <span style={{ width: `${evaluation.ratio * 100}%` }} />

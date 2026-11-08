@@ -2,11 +2,17 @@ import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 
 import { logicSessions, sessionLessons } from "./data";
 import SessionOneView from "./sessions/session-1";
+import SessionTwoView from "./sessions/session-2";
+import SessionThreeView from "./sessions/session-3";
+import SessionFourView from "./sessions/session-4";
 
 type SessionViewProps = { sessionId: number };
 
 export default function ComputationalLogicSession({ sessionId }: SessionViewProps) {
   if (sessionId === 1) return <SessionOneView />;
+  if (sessionId === 2) return <SessionTwoView />;
+  if (sessionId === 3) return <SessionThreeView />;
+  if (sessionId === 4) return <SessionFourView />;
 
   const session = logicSessions.find((item) => item.session === sessionId);
   const lesson = sessionLessons[sessionId];

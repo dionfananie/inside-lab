@@ -11,8 +11,8 @@ export const logicSessions: LogicSession[] = [
   },
   {
     session: 2,
-    topic: "Logika proposisional dan tabel kebenaran",
-    target: "Menyusun proposisi, mengevaluasi operator logika, dan membaca tabel kebenaran.",
+    topic: "Logika proposisional dan simbol logika",
+    target: "Memahami proposisi, logical connectives, dan mengubah kalimat menjadi formula simbolik.",
     activity: "Truth Table Race: buat tabel kebenaran untuk skenario login atau akses fitur, lalu verifikasi hasil kelompok lain.",
     status: "ready",
     href: "/computational-logic/session/2",
@@ -20,8 +20,8 @@ export const logicSessions: LogicSession[] = [
   },
   {
     session: 3,
-    topic: "Ekivalensi logis, CNF, dan DNF",
-    target: "Mengubah ekspresi ke bentuk normal dan memeriksa apakah dua ekspresi memiliki makna yang sama.",
+    topic: "Truth table, evaluasi logika, dan well-formed formula",
+    target: "Mengevaluasi formula melalui seluruh kombinasi nilai kebenaran dan mengklasifikasikan formula.",
     activity: "Logic Transformation Puzzle: ubah ekspresi ke bentuk normal dan periksa kesetaraan hasil kelompok lain.",
     status: "ready",
     href: "/computational-logic/session/3",
@@ -29,8 +29,8 @@ export const logicSessions: LogicSession[] = [
   },
   {
     session: 4,
-    topic: "Aturan inferensi dan validitas argumen",
-    target: "Menguji apakah kesimpulan mengikuti premis menggunakan aturan inferensi.",
+    topic: "Ekuivalensi logis, konsekuensi logis, dan validitas",
+    target: "Membuktikan kesetaraan formula dan menentukan validitas argumen.",
     activity: "Valid or Invalid?: adili argumen, tentukan validitasnya, dan bela keputusan dengan aturan inferensi.",
     status: "ready",
     href: "/computational-logic/session/4",

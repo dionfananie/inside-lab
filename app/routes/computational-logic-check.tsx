@@ -13,7 +13,7 @@ export function loader({ request, params }: Route.LoaderArgs) {
   return {
     canonical: canonicalOf(request.url),
     session,
-    groups: getCheck(session.session),
+    check: getCheck(session.session),
   };
 }
 
@@ -28,5 +28,5 @@ export const meta: Route.MetaFunction = ({ loaderData }) => {
 };
 
 export default function ComputationalLogicCheckRoute({ loaderData }: Route.ComponentProps) {
-  return <CheckPage session={loaderData.session} groups={loaderData.groups} />;
+  return <CheckPage session={loaderData.session} check={loaderData.check} />;
 }
