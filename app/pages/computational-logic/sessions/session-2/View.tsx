@@ -3,11 +3,12 @@ import { ArrowLeft, ArrowRight, BookOpen, CheckCircle2, Lightbulb } from "lucide
 import CodeBlock from "../session-1/components/CodeBlock";
 import SessionNavigation from "../session-1/components/SessionNavigation";
 import TruthTable from "../../components/TruthTable";
+import KnowledgeCheck from "../../check/KnowledgeCheck";
+import { sessionTwoCheck } from "./check";
 import "../session-1/session-1.css";
 import {
   atomicCompoundTable,
   connectives,
-  knowledgeCheckGroups,
   nonPropositionExamples,
   programOperators,
   propositionExamples,
@@ -340,19 +341,11 @@ Formula: (P ∧ Q ∧ ¬R) → S`}</CodeBlock>
           <section className="session-one-section session-one-knowledge" aria-labelledby="knowledge-check">
             <SectionHeading number="12" title="Knowledge check" id="knowledge-check" />
             <p>
-              Uji pemahamanmu dengan {knowledgeCheckGroups.reduce((total, group) => total + group.questions.length, 0)} soal
-              micro-quiz dari materi sesi ini.
+              Uji pemahamanmu langsung di halaman ini. Kerjakan 8 soal pilihan
+              ganda — setiap jawaban langsung dicek benar atau salah — lalu
+              lengkapi 1 soal esai sebelum submit.
             </p>
-            <div className="session-one-check-cta">
-              <h3>Siap menguji pemahamanmu?</h3>
-              <p>
-                Kerjakan soal berdasarkan pemahaman sendiri, lalu lihat hasil
-                penilaian kelengkapan konsep.
-              </p>
-              <a className="computational-button computational-button-primary" href="/computational-logic/session/2/check">
-                Lanjut ke knowledge check <ArrowRight size={15} />
-              </a>
-            </div>
+            <KnowledgeCheck check={sessionTwoCheck} sessionId={2} />
           </section>
         </article>
 

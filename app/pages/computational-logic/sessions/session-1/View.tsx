@@ -11,6 +11,8 @@ import {
 import CodeBlock from "./components/CodeBlock";
 import SessionNavigation from "./components/SessionNavigation";
 import TruthTable from "../../components/TruthTable";
+import KnowledgeCheck from "../../check/KnowledgeCheck";
+import { sessionOneCheck } from "./check";
 import "./session-1.css";
 
 function SectionHeading({ number, title, id }: { number: string; title: string; id: string }) {
@@ -399,20 +401,11 @@ Formula: P → Q`}</CodeBlock>
           <section className="session-one-section session-one-knowledge" aria-labelledby="knowledge-check">
             <SectionHeading number="08" title="Knowledge check" id="knowledge-check" />
             <p>
-              Uji pemahamanmu dengan micro-quiz dari materi sesi ini. Knowledge
-              check dibuka di halaman terpisah agar kamu fokus mengerjakan tanpa
-              melihat materi.
+              Uji pemahamanmu langsung di halaman ini. Kerjakan 8 soal pilihan
+              ganda — setiap jawaban langsung dicek benar atau salah — lalu
+              lengkapi 1 soal esai sebelum submit.
             </p>
-            <div className="session-one-check-cta">
-              <h3>Siap menguji pemahamanmu?</h3>
-              <p>
-                Kerjakan soal berdasarkan pemahaman sendiri, lalu lihat hasil
-                penilaian kelengkapan konsep.
-              </p>
-              <a className="computational-button computational-button-primary" href="/computational-logic/session/1/check">
-                Lanjut ke knowledge check <ArrowRight size={15} />
-              </a>
-            </div>
+            <KnowledgeCheck check={sessionOneCheck} sessionId={1} />
           </section>
         </article>
 

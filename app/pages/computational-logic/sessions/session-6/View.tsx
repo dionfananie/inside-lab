@@ -2,10 +2,11 @@ import { ArrowLeft, ArrowRight, BookOpen, CheckCircle2, Lightbulb } from "lucide
 
 import CodeBlock from "../session-1/components/CodeBlock";
 import SessionNavigation from "../session-1/components/SessionNavigation";
+import KnowledgeCheck from "../../check/KnowledgeCheck";
+import { sessionSixCheck } from "./check";
 import "../session-1/session-1.css";
 import {
   componentsTable,
-  knowledgeCheckGroups,
   quantifierComparisonTable,
   quantifierLaws,
   sessionSixObjectives,
@@ -216,16 +217,11 @@ Takes(Teddy, AI) Takes(Budi, Database)`}</CodeBlock>
           <section className="session-one-section session-one-knowledge" aria-labelledby="knowledge-check">
             <SectionHeading number="14" title="Knowledge check" id="knowledge-check" />
             <p>
-              Uji pemahamanmu dengan {knowledgeCheckGroups.reduce((total, group) => total + group.questions.length, 0)} soal
-              micro-quiz dari materi sesi ini.
+              Uji pemahamanmu langsung di halaman ini. Kerjakan 8 soal pilihan
+              ganda — setiap jawaban langsung dicek benar atau salah — lalu
+              lengkapi 1 soal esai sebelum submit.
             </p>
-            <div className="session-one-check-cta">
-              <h3>Siap menguji pemahamanmu?</h3>
-              <p>Kerjakan soal berdasarkan pemahaman sendiri, lalu lihat penilaian kelengkapan konsep.</p>
-              <a className="computational-button computational-button-primary" href="/computational-logic/session/6/check">
-                Lanjut ke knowledge check <ArrowRight size={15} />
-              </a>
-            </div>
+            <KnowledgeCheck check={sessionSixCheck} sessionId={6} />
           </section>
         </article>
 

@@ -4,6 +4,7 @@ import { canonicalOf, socialMeta } from "~/lib/seo";
 import { findLogicSession } from "~/pages/computational-logic/data";
 import ComputationalLogicSession from "~/pages/computational-logic/SessionView";
 import "~/pages/computational-logic/computational-logic.css";
+import "~/pages/computational-logic/check/check.css";
 
 export function loader({ request, params }: Route.LoaderArgs) {
   const session = findLogicSession(params.sessionId);

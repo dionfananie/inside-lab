@@ -1,144 +1,94 @@
-import { CheckCircle2, Play } from "lucide-react";
+import { CheckCircle2, ChevronLeft, ChevronRight, Send, XCircle } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "~/components/ui/button";
 import CodeBlock from "../sessions/session-1/components/CodeBlock";
 import type {
-  KnowledgeCheckGroup,
-  KnowledgeCheckQuestion,
-} from "../sessions/session-1/data";
-import type { AnswerRubric } from "../sessions/session-1/rubrics";
+  MultipleChoiceQuestion,
+  SessionKnowledgeCheck,
+} from "./types";
 
-type EvaluationLevel = "empty" | "short" | "needs-work" | "fair" | "good" | "excellent";
-
-type Evaluation = {
-  level: EvaluationLevel;
-  label: string;
-  matched: string[];
-  missing: string[];
-  ratio: number;
-  wordCount: number;
+type McAnswer = {
+  selectedOptionId: string;
+  isCorrect: boolean;
 };
 
-function normalize(value: string) {
-  return value
-    .toLowerCase()
-    .replace(/[’‘]/g, "'")
-    .replace(/[“”]/g, '"')
-    .replace(/→/g, "->")
-    .replace(/∧/g, "and")
-    .replace(/∨/g, "or")
-    .replace(/¬/g, "not")
-    .replace(/[^\p{L}\p{N}\s>=-]/gu, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function includesTerm(normalized: string, compact: string, term: string) {
-  const normalizedTerm = normalize(term);
-  if (!normalizedTerm) return false;
-
-  return (
-    normalized.includes(normalizedTerm) ||
-    compact.includes(normalizedTerm.replace(/\s+/g, ""))
-  );
-}
-
-function evaluateAnswer(
-  question: KnowledgeCheckQuestion,
-  answer: string,
-  rubrics: Record<number, AnswerRubric>,
-): Evaluation | null {
-  const rubric = rubrics[question.number];
-  if (!rubric) return null;
-
-  const normalized = normalize(answer);
-  const compact = normalized.replace(/\s+/g, "");
-  const wordCount = normalized ? normalized.split(/\s+/).length : 0;
-
-  const matched = rubric.concepts
-    .filter((concept) => concept.terms.some((term) => includesTerm(normalized, compact, term)))
-    .map((concept) => concept.label);
-  const missing = rubric.concepts
-    .filter((concept) => !concept.terms.some((term) => includesTerm(normalized, compact, term)))
-    .map((concept) => concept.label);
-  const ratio = rubric.concepts.length === 0 ? 0 : matched.length / rubric.concepts.length;
-
-  let level: EvaluationLevel;
-  let label: string;
-
-  if (!normalized) {
-    level = "empty";
-    label = "Belum diisi";
-  } else if (wordCount < rubric.minWords) {
-    level = "short";
-    label = "Terlalu singkat";
-  } else if (ratio === 1) {
-    level = "excellent";
-    label = "Sangat baik";
-  } else if (ratio >= 0.75) {
-    level = "good";
-    label = "Baik";
-  } else if (ratio >= 0.5) {
-    level = "fair";
-    label = "Cukup";
-  } else {
-    level = "needs-work";
-    label = "Perlu dilengkapi";
-  }
-
-  return { level, label, matched, missing, ratio, wordCount };
-}
-
 type KnowledgeCheckProps = {
-  groups: KnowledgeCheckGroup[];
-  rubrics: Record<number, AnswerRubric>;
-  sessionHref: string;
+  check: SessionKnowledgeCheck;
   sessionId: number;
 };
 
-export default function KnowledgeCheck({ groups, rubrics, sessionHref, sessionId }: KnowledgeCheckProps) {
-  const [answers, setAnswers] = useState<Record<number, string>>({});
-  const [evaluations, setEvaluations] = useState<Record<number, Evaluation>>({});
-  const [hasStarted, setHasStarted] = useState(false);
+export default function KnowledgeCheck({ check, sessionId }: KnowledgeCheckProps) {
+  const [mcAnswers, setMcAnswers] = useState<Record<number, McAnswer>>({});
+  const [essayAnswer, setEssayAnswer] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [submitState, setSubmitState] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [submitMessage, setSubmitMessage] = useState("");
-  const totalQuestions = groups.reduce((total, group) => total + group.questions.length, 0);
-  const answeredQuestions = Object.values(answers).filter(
-    (answer) => answer.trim().length > 0,
-  ).length;
 
-  function updateAnswer(questionNumber: number, value: string) {
-    setAnswers((current) => ({ ...current, [questionNumber]: value }));
-    setEvaluations((current) => {
-      if (!(questionNumber in current)) return current;
-      const next = { ...current };
-      delete next[questionNumber];
-      return next;
+  const { multipleChoice, essay } = check;
+  const total = multipleChoice.length;
+  const answered = Object.keys(mcAnswers).length;
+  const correct = Object.values(mcAnswers).filter((item) => item.isCorrect).length;
+  const allMcAnswered = answered === total;
+  const canSubmit = allMcAnswered && essayAnswer.trim().length > 0 && submitState !== "loading";
+
+  const isEssaySlide = currentIndex >= total;
+  const currentQuestion = isEssaySlide ? null : multipleChoice[currentIndex];
+
+  function selectOption(question: MultipleChoiceQuestion, optionId: string) {
+    setMcAnswers((current) => {
+      if (current[question.number]) return current;
+      return {
+        ...current,
+        [question.number]: {
+          selectedOptionId: optionId,
+          isCorrect: optionId === question.correctOptionId,
+        },
+      };
     });
   }
 
-  function checkAnswer(question: KnowledgeCheckQuestion) {
-    const evaluation = evaluateAnswer(question, answers[question.number] ?? "", rubrics);
-    if (!evaluation) return;
-    setEvaluations((current) => ({ ...current, [question.number]: evaluation }));
+  function goTo(index: number) {
+    setCurrentIndex(Math.max(0, Math.min(total, index)));
+  }
+
+  function goNext() {
+    if (currentIndex < total) setCurrentIndex(currentIndex + 1);
+  }
+
+  function goPrev() {
+    if (currentIndex > 0) setCurrentIndex(currentIndex - 1);
   }
 
   async function submitAllAnswers() {
-    const answered = groups
-      .flatMap((group) => group.questions)
-      .filter((question) => (answers[question.number] ?? "").trim().length > 0)
-      .map((question) => ({
-        questionNumber: question.number,
-        question: question.prompt,
-        answer: (answers[question.number] ?? "").trim(),
-      }));
+    const mcPayload = multipleChoice
+      .filter((question) => mcAnswers[question.number])
+      .map((question) => {
+        const answer = mcAnswers[question.number];
+        const option = question.options.find((item) => item.id === answer.selectedOptionId);
+        return {
+          questionNumber: question.number,
+          question: question.prompt,
+          answer: option?.text ?? "",
+          answerType: "multiple_choice",
+          selectedOptionId: answer.selectedOptionId,
+          isCorrect: answer.isCorrect,
+        };
+      });
 
-    if (answered.length === 0) {
-      setSubmitState("error");
-      setSubmitMessage("Isi minimal satu jawaban sebelum submit.");
-      return;
-    }
+    const answers = [
+      ...mcPayload,
+      ...(essayAnswer.trim().length > 0
+        ? [
+            {
+              questionNumber: essay.number,
+              question: essay.prompt,
+              answer: essayAnswer.trim(),
+              answerType: "essay",
+            },
+          ]
+        : []),
+    ];
 
     setSubmitState("loading");
     setSubmitMessage("");
@@ -147,11 +97,9 @@ export default function KnowledgeCheck({ groups, rubrics, sessionHref, sessionId
       const response = await fetch("/api/check-submit", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ sessionId, answers: answered }),
+        body: JSON.stringify({ sessionId, answers }),
       });
-      const data = (await response.json().catch(() => ({}))) as {
-        error?: string;
-      };
+      const data = (await response.json().catch(() => ({}))) as { error?: string };
 
       if (!response.ok) {
         setSubmitState("error");
@@ -164,142 +112,159 @@ export default function KnowledgeCheck({ groups, rubrics, sessionHref, sessionId
       }
 
       setSubmitState("success");
-      setSubmitMessage("Jawaban berhasil disimpan.");
+      setSubmitMessage(
+        `Jawaban berhasil disimpan. Skor pilihan ganda kamu ${correct} dari ${total}.`,
+      );
     } catch {
       setSubmitState("error");
       setSubmitMessage("Terjadi kesalahan jaringan. Coba lagi.");
     }
   }
 
-  if (!hasStarted) {
-    return (
-      <div className="quiz-gate">
-        <span className="computational-section-label">KNOWLEDGE CHECK</span>
-        <h2>Siap menguji pemahamanmu?</h2>
-        <p>
-          Kerjakan micro-quiz berdasarkan pemahamanmu. Jawabanmu akan dinilai
-          dari kelengkapan konsep kunci, dan kamu bisa kembali ke materi kapan
-          saja.
-        </p>
-        <Button type="button" onClick={() => setHasStarted(true)}>
-          <Play size={15} fill="currentColor" /> Mulai knowledge check
-        </Button>
-      </div>
-    );
-  }
-
   return (
-    <div className="quiz">
-      <div className="quiz-toolbar">
-        <div className="quiz-progress" role="status" aria-live="polite">
-          <strong>{answeredQuestions}</strong> dari {totalQuestions} pertanyaan sudah diisi.
+    <div className="check-inline">
+      <div className="mc-progress">
+        <div className="mc-progress-head">
+          <span className="mc-progress-title">Progres pilihan ganda</span>
+          <span className="mc-progress-count">
+            {answered} dari {total} dijawab · {correct} benar
+          </span>
         </div>
-        <a className="quiz-back-link" href={sessionHref}>Kembali ke materi</a>
-      </div>
-      <p className="quiz-note">
-        Pengecekan otomatis menilai <strong>kelengkapan konsep kunci</strong>,
-        bukan benar-salah mutlak. Gunakan hasilnya sebagai panduan.
-      </p>
-
-      {groups.map((group) => (
-        <section className="quiz-group" key={group.id} aria-labelledby={group.id}>
-          <h3 id={group.id}>{group.title}</h3>
-          {group.questions.map((question) => {
-            const answerId = `quiz-answer-${question.number}`;
-            const evaluation = evaluations[question.number];
-
+        <div className="mc-progress-track" role="list">
+          {multipleChoice.map((question, index) => {
+            const answer = mcAnswers[question.number];
+            const state = !answer ? "empty" : answer.isCorrect ? "correct" : "wrong";
+            const isActive = index === currentIndex;
             return (
-              <article className="quiz-question" key={question.number}>
-                <span>PERTANYAAN {question.number}</span>
-                <p>{question.prompt}</p>
-                {question.code && <CodeBlock>{question.code}</CodeBlock>}
-                {question.list && (
-                  <ul className="quiz-list">
-                    {question.list.map((item) => <li key={item}>{item}</li>)}
-                  </ul>
-                )}
-                <label className="quiz-answer" htmlFor={answerId}>
-                  <span>Jawabanmu</span>
-                  <textarea
-                    id={answerId}
-                    value={answers[question.number] ?? ""}
-                    onChange={(event) => updateAnswer(question.number, event.target.value)}
-                    rows={4}
-                    placeholder="Tulis jawabanmu berdasarkan pemahaman sendiri..."
-                  />
-                </label>
-                <div className="quiz-actions">
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={() => checkAnswer(question)}
-                    disabled={!answers[question.number]?.trim()}
-                  >
-                    <CheckCircle2 size={14} /> Cek jawaban
-                  </Button>
-                  <span>Dinilai dari konsep kunci yang muncul.</span>
-                </div>
-
-                {evaluation && (
-                  <div className={`quiz-result is-${evaluation.level}`}>
-                    <div className="quiz-result-head">
-                      <strong>{evaluation.label}</strong>
-                      <span>{evaluation.matched.length}/{rubrics[question.number].concepts.length} konsep</span>
-                    </div>
-                    <div className="quiz-result-track" aria-hidden="true">
-                      <span style={{ width: `${evaluation.ratio * 100}%` }} />
-                    </div>
-                    {evaluation.level === "empty" ? (
-                      <p>Jawaban belum diisi.</p>
-                    ) : (
-                      <>
-                        {evaluation.matched.length > 0 && (
-                          <p className="is-matched">Sudah disebut: {evaluation.matched.join(", ")}.</p>
-                        )}
-                        {evaluation.missing.length > 0 && (
-                          <p className="is-missing">Bisa ditambahkan: {evaluation.missing.join(", ")}.</p>
-                        )}
-                        {evaluation.level === "short" && (
-                          <p>Jawaban masih singkat. Tambahkan penjelasan dan contoh agar lebih lengkap.</p>
-                        )}
-                        {evaluation.missing.length === 0 && evaluation.level !== "short" && (
-                          <p>Semua konsep kunci sudah tercakup.</p>
-                        )}
-                      </>
-                    )}
-                  </div>
-                )}
-
-                <details className="quiz-details">
-                  <summary>Lihat petunjuk jawaban</summary>
-                  <p>{question.answer}</p>
-                </details>
-              </article>
+              <button
+                type="button"
+                key={question.number}
+                className={`mc-progress-segment is-${state}${isActive ? " is-active" : ""}`}
+                onClick={() => goTo(index)}
+                aria-label={`Soal ${question.number}: ${state === "empty" ? "belum dijawab" : state === "correct" ? "benar" : "salah"}`}
+                aria-current={isActive ? "step" : undefined}
+              />
             );
           })}
-        </section>
-      ))}
+        </div>
+      </div>
 
-      <div className="quiz-submit">
-        <Button
-          type="button"
-          onClick={submitAllAnswers}
-          disabled={submitState === "loading"}
-        >
-          Submit semua jawaban
-        </Button>
-        <p className="quiz-submit-hint">
-          Jawaban dan soal akan disimpan ke akunmu untuk referensi belajar.
-        </p>
-        {submitMessage && (
-          <div className={`quiz-submit-message is-${submitState}`} role="status" aria-live="polite">
-            {submitMessage}
-            {submitState === "error" && submitMessage.includes("login") && (
-              <> <a href="/login">Masuk</a></>
+      <div className="mc-slide" key={isEssaySlide ? "essay" : `mc-${currentIndex}`}>
+        {isEssaySlide ? (
+          <article className="mc-question mc-essay">
+            <span className="mc-question-number">SOAL {essay.number} · ESSAY</span>
+            <p className="mc-question-prompt">{essay.prompt}</p>
+            {essay.code && <CodeBlock>{essay.code}</CodeBlock>}
+            {essay.list && (
+              <ul className="quiz-list">
+                {essay.list.map((item) => <li key={item}>{item}</li>)}
+              </ul>
             )}
-          </div>
+            <label className="quiz-answer">
+              <span>Jawabanmu</span>
+              <textarea
+                value={essayAnswer}
+                onChange={(event) => setEssayAnswer(event.target.value)}
+                rows={6}
+                placeholder="Tulis jawaban esai berdasarkan pemahamanmu..."
+              />
+            </label>
+
+            <div className="quiz-submit">
+              <Button type="button" onClick={submitAllAnswers} disabled={!canSubmit}>
+                <Send size={15} /> Submit jawaban
+              </Button>
+              <p className="quiz-submit-hint">
+                {allMcAnswered
+                  ? essayAnswer.trim().length > 0
+                    ? "Jawaban pilihan ganda dan esai akan disimpan ke akunmu."
+                    : "Isi jawaban esai untuk dapat submit."
+                  : `Selesaikan ${total - answered} pilihan ganda lagi untuk dapat submit.`}
+              </p>
+              {submitMessage && (
+                <div className={`quiz-submit-message is-${submitState}`} role="status" aria-live="polite">
+                  {submitMessage}
+                  {submitState === "error" && submitMessage.includes("login") && (
+                    <> <a href="/login">Masuk</a></>
+                  )}
+                </div>
+              )}
+            </div>
+          </article>
+        ) : (
+          <article className="mc-question">
+            <span className="mc-question-number">
+              SOAL {currentQuestion!.number} DARI {total}
+            </span>
+            <p className="mc-question-prompt">{currentQuestion!.prompt}</p>
+            {currentQuestion!.code && <CodeBlock>{currentQuestion!.code}</CodeBlock>}
+            {currentQuestion!.list && (
+              <ul className="quiz-list">
+                {currentQuestion!.list.map((item) => <li key={item}>{item}</li>)}
+              </ul>
+            )}
+
+            <div className="mc-options">
+              {currentQuestion!.options.map((option) => {
+                const answer = mcAnswers[currentQuestion!.number];
+                const isSelected = answer?.selectedOptionId === option.id;
+                const isCorrectOption = option.id === currentQuestion!.correctOptionId;
+                let stateClass = "";
+                if (answer) {
+                  if (isCorrectOption) stateClass = " is-correct";
+                  else if (isSelected) stateClass = " is-wrong";
+                }
+                return (
+                  <button
+                    type="button"
+                    key={option.id}
+                    className={`mc-option${stateClass}`}
+                    onClick={() => selectOption(currentQuestion!, option.id)}
+                    disabled={Boolean(answer)}
+                    aria-pressed={isSelected}
+                  >
+                    <span className="mc-option-id">{option.id.toUpperCase()}</span>
+                    <span className="mc-option-text">{option.text}</span>
+                    {answer && isCorrectOption && (
+                      <CheckCircle2 className="mc-option-icon" size={16} aria-hidden="true" />
+                    )}
+                    {answer && isSelected && !isCorrectOption && (
+                      <XCircle className="mc-option-icon" size={16} aria-hidden="true" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {mcAnswers[currentQuestion!.number] && (
+              <div className={`mc-feedback is-${mcAnswers[currentQuestion!.number].isCorrect ? "correct" : "wrong"}`}>
+                <strong>{mcAnswers[currentQuestion!.number].isCorrect ? "Benar" : "Salah"}</strong>
+                <p>{currentQuestion!.explanation}</p>
+              </div>
+            )}
+          </article>
         )}
+
+        <div className="mc-nav">
+          <Button type="button" variant="outline" onClick={goPrev} disabled={currentIndex === 0}>
+            <ChevronLeft size={15} /> Sebelumnya
+          </Button>
+          <span className="mc-nav-indicator">
+            {isEssaySlide ? "Esai" : `Soal ${currentIndex + 1} / ${total}`}
+          </span>
+          {isEssaySlide ? (
+            <span className="mc-nav-spacer" />
+          ) : (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={goNext}
+              disabled={!mcAnswers[currentQuestion!.number]}
+            >
+              Selanjutnya <ChevronRight size={15} />
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

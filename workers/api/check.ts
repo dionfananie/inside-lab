@@ -4,6 +4,9 @@ type SubmitAnswer = {
   questionNumber: number;
   question: string;
   answer: string;
+  answerType?: 'multiple_choice' | 'essay';
+  selectedOptionId?: string;
+  isCorrect?: boolean;
 };
 
 type SubmitPayload = {
@@ -58,6 +61,9 @@ export async function checkApi(request: Request, env: Env): Promise<Response> {
       if (item.question.length > 4000 || item.answer.length > 10000) {
         return json({ error: 'Jawaban terlalu panjang.' }, 400);
       }
+      if (item.answerType !== undefined && item.answerType !== 'multiple_choice' && item.answerType !== 'essay') {
+        return json({ error: 'Tipe jawaban tidak valid.' }, 400);
+      }
     }
 
     const id = crypto.randomUUID();
@@ -71,9 +77,16 @@ export async function checkApi(request: Request, env: Env): Promise<Response> {
       ...answers.map((answer) =>
         db
           .prepare(
-            'INSERT INTO check_submission_answers (submission_id, question_number, question, answer) VALUES (?, ?, ?, ?)',
+            'INSERT INTO check_submission_answers (submission_id, question_number, question, answer, answer_type, is_correct) VALUES (?, ?, ?, ?, ?, ?)',
           )
-          .bind(id, answer.questionNumber, answer.question, answer.answer),
+          .bind(
+            id,
+            answer.questionNumber,
+            answer.question,
+            answer.answer,
+            answer.answerType ?? 'essay',
+            answer.isCorrect === undefined ? null : answer.isCorrect ? 1 : 0,
+          ),
       ),
     ];
 
