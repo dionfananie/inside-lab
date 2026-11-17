@@ -94,6 +94,16 @@
   gap: 10px;
 }
 
+.home-header-user-name {
+  max-width: 160px;
+  overflow: hidden;
+  color: var(--home-muted);
+  font-size: 13px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .home-header-cta {
   justify-self: auto;
   min-height: 40px;
@@ -1599,6 +1609,11 @@
 
   .home-header-actions {
     gap: 6px;
+  }
+
+  .home-header-user-name {
+    max-width: 92px;
+    font-size: 12px;
   }
 
   .auth-control {

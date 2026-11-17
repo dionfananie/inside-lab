@@ -2,12 +2,15 @@ import { ArrowRight } from "lucide-react";
 
 import AuthControl from "~/components/AuthControl";
 import { InsideLabBrand } from "~/components/inside-lab-brand";
+import { useAuth } from "~/lib/auth";
 
 type HomeHeaderProps = {
   firstChapterHref: string;
 };
 
 export default function HomeHeader({ firstChapterHref }: HomeHeaderProps) {
+  const { user } = useAuth();
+
   return (
     <header className="home-header home-reveal">
       <InsideLabBrand area="Lab Belajar" />
@@ -18,10 +21,15 @@ export default function HomeHeader({ firstChapterHref }: HomeHeaderProps) {
         <a href="#computational-logic">Computational Logic</a>
       </nav>
       <div className="home-header-actions">
+        {user && (
+          <span className="home-header-user-name" title={user.email}>
+            {user.name || user.email}
+          </span>
+        )}
         <a className="home-header-cta" href={firstChapterHref}>
           Mulai belajar <ArrowRight size={15} />
         </a>
-        <AuthControl />
+        <AuthControl showUserName={false} />
       </div>
     </header>
   );

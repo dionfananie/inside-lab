@@ -94,7 +94,10 @@ export async function authApi(request: Request, env: Env): Promise<Response> {
 
     const session = await createSession(db, userId);
     const returnTo = safeReturnTo(url.searchParams.get('returnTo'));
-    const response = Response.redirect(new URL(returnTo, url.origin).toString(), 302);
+    const response = new Response(null, {
+      status: 302,
+      headers: { Location: new URL(returnTo, url.origin).toString() },
+    });
     setSessionCookie(response.headers, session.token, session.expiresMs);
     return response;
   }
