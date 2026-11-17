@@ -4,6 +4,7 @@ import { chapter as chapterThree, parts as chapterThreeParts } from './chapter-t
 import { chapter as chapterFour, parts as chapterFourParts } from './chapter-four';
 import { chapter as chapterFive, parts as chapterFiveParts } from './chapter-five';
 import { chapter as chapterSix, parts as chapterSixParts } from './chapter-six';
+import { chapter as chapterSeven, parts as chapterSevenParts } from './chapter-seven';
 import { chapter as chapterEight, parts as chapterEightParts } from './chapter-eight';
 import { chapter as chapterNine, parts as chapterNineParts } from './chapter-nine';
 import { chapter as chapterTen, parts as chapterTenParts } from './chapter-ten';
@@ -24,6 +25,7 @@ export const chapters: Chapter[] = [
   { ...chapterFour, parts: chapterFourParts },
   { ...chapterFive, parts: chapterFiveParts },
   { ...chapterSix, parts: chapterSixParts },
+  { ...chapterSeven, parts: chapterSevenParts },
   { ...chapterEight, parts: chapterEightParts },
   { ...chapterNine, parts: chapterNineParts },
   { ...chapterTen, parts: chapterTenParts },
