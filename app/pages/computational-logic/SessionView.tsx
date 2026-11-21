@@ -7,6 +7,7 @@ import SessionThreeView from "./sessions/session-3";
 import SessionFourView from "./sessions/session-4";
 import SessionFiveView from "./sessions/session-5";
 import SessionSixView from "./sessions/session-6";
+import SessionSevenView from "./sessions/session-7";
 
 type SessionViewProps = { sessionId: number };
 
@@ -17,6 +18,7 @@ export default function ComputationalLogicSession({ sessionId }: SessionViewProp
   if (sessionId === 4) return <SessionFourView />;
   if (sessionId === 5) return <SessionFiveView />;
   if (sessionId === 6) return <SessionSixView />;
+  if (sessionId === 7) return <SessionSevenView />;
 
   const session = logicSessions.find((item) => item.session === sessionId);
   const lesson = sessionLessons[sessionId];
@@ -29,7 +31,7 @@ export default function ComputationalLogicSession({ sessionId }: SessionViewProp
     <main className="computational-page computational-session-page">
       <header className="computational-header">
         <a className="computational-back-link" href="/computational-logic"><ArrowLeft size={15} /> Computational Logic</a>
-        <span className="computational-session-progress">SESI 0{session.session} / 06</span>
+        <span className="computational-session-progress">SESI 0{session.session} / 07</span>
       </header>
       <section className="computational-lesson-hero">
         <div className="computational-section-label">SESI 0{session.session} · MATERI</div>

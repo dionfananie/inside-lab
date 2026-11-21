@@ -52,7 +52,7 @@ export default function SessionSixView() {
         <a className="computational-back-link" href="/computational-logic">
           <ArrowLeft size={15} /> Computational Logic
         </a>
-        <span className="computational-session-progress">SESI 06 / 06</span>
+        <span className="computational-session-progress">SESI 06 / 07</span>
       </header>
 
       <section className="session-one-hero" aria-labelledby="session-six-title">
@@ -229,15 +229,15 @@ Takes(Teddy, AI) Takes(Budi, Database)`}</CodeBlock>
           <SessionNavigation sections={sessionSixSections} storageKey="inside-lab:computational-logic:session-6:read-sections:v1" />
           <div className="session-one-toc-note">
             <strong>Setelah sesi ini</strong>
-            <p>Lanjut ke First-Order Logic Inference & Resolution.</p>
-            <a href="/computational-logic">Kembali ke Computational Logic <ArrowRight size={14} /></a>
+            <p>Lanjut ke Formal Proof & Natural Deduction.</p>
+            <a href="/computational-logic/session/7">Sesi berikutnya <ArrowRight size={14} /></a>
           </div>
         </aside>
       </div>
 
       <nav className="computational-session-navigation" aria-label="Navigasi sesi">
         <a href="/computational-logic/session/5"><ArrowLeft size={15} /> Sesi sebelumnya</a>
-        <a href="/computational-logic">Selesai <ArrowRight size={15} /></a>
+        <a href="/computational-logic/session/7">Sesi berikutnya <ArrowRight size={15} /></a>
       </nav>
     </main>
   );

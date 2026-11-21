@@ -52,7 +52,7 @@ export default function SessionFiveView() {
         <a className="computational-back-link" href="/computational-logic">
           <ArrowLeft size={15} /> Computational Logic
         </a>
-        <span className="computational-session-progress">SESI 05 / 06</span>
+        <span className="computational-session-progress">SESI 05 / 07</span>
       </header>
 
       <section className="session-one-hero" aria-labelledby="session-five-title">

@@ -10,7 +10,7 @@ export function loader({ request }: Route.LoaderArgs) {
 
 const title = "Computational Logic — insideLab";
 const description =
-  "Pelajari logika formal, sintaks, semantik, validitas argumen, dan SAT melalui enam sesi belajar interaktif.";
+  "Pelajari logika formal, sintaks, semantik, validitas argumen, dan SAT melalui tujuh sesi belajar interaktif.";
 
 export const meta: Route.MetaFunction = ({ loaderData }) => [
   { title },

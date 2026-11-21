@@ -73,7 +73,7 @@ export default function ComputationalLogicPage() {
       <section className="computational-section computational-roadmap" aria-labelledby="roadmap-title">
         <div className="computational-section-heading">
           <div className="computational-section-label">03 / ROADMAP</div>
-          <h2 id="roadmap-title">Enam sesi untuk membangun cara berpikir logis.</h2>
+          <h2 id="roadmap-title">Tujuh sesi untuk membangun cara berpikir logis.</h2>
         </div>
         <div className="computational-session-list">
           {logicSessions.map((session) => (

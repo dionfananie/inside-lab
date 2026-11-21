@@ -75,7 +75,7 @@ export default function SessionTwoView() {
         <a className="computational-back-link" href="/computational-logic">
           <ArrowLeft size={15} /> Computational Logic
         </a>
-        <span className="computational-session-progress">SESI 02 / 06</span>
+        <span className="computational-session-progress">SESI 02 / 07</span>
       </header>
 
       <section className="session-one-hero" aria-labelledby="session-two-title">

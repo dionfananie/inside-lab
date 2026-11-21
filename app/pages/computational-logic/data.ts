@@ -52,6 +52,14 @@ export const logicSessions: LogicSession[] = [
     status: "ready",
     href: "/computational-logic/session/6",
   },
+  {
+    session: 7,
+    topic: "Formal proof dan Natural Deduction",
+    target: "Membuktikan kesimpulan dari premis menggunakan aturan introduction, elimination, dan subproof.",
+    activity: "Proof Construction Challenge: susun pembuktian formal untuk studi kasus peminjaman buku dan periksa justifikasi setiap langkah.",
+    status: "ready",
+    href: "/computational-logic/session/7",
+  },
 ];
 
 export function findLogicSession(sessionId: string | undefined) {

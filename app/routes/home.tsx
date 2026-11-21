@@ -52,7 +52,7 @@ export function loader({ request }: Route.LoaderArgs) {
 const homeTitle = "insideLab — Belajar JavaScript & Logika secara Interaktif";
 
 export const meta: Route.MetaFunction = ({ loaderData }) => {
-	const description = `Pilih dua jalur belajar insideLab: Learning JS dengan runtime JavaScript interaktif atau Computational Logic dengan Logic Lab, SAT Solver, dan enam sesi logika formal.`;
+	const description = `Pilih dua jalur belajar insideLab: Learning JS dengan runtime JavaScript interaktif atau Computational Logic dengan Logic Lab, SAT Solver, dan tujuh sesi logika formal.`;
 	return [
 		{ title: homeTitle },
 		{ name: "description", content: description },

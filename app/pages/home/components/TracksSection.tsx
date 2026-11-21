@@ -23,7 +23,7 @@ export default function TracksSection({ firstChapterHref, totalExercises }: Trac
           <div className="home-lab-card-top"><span className="home-lab-icon"><Lightbulb size={21} /></span><span>02 / COMPUTATIONAL LOGIC</span></div>
           <div><h3>Ubah intuisi menjadi argumen yang dapat diuji.</h3><p>Pelajari logika formal, sintaks, semantik, tabel kebenaran, dan SAT melalui aktivitas yang membuat alasanmu terlihat.</p></div>
           <div className="home-logic-links"><a href="/computational-logic">Jelajahi jalur <ArrowRight size={15} /></a><a href="/computational-logic/sat-solver">SAT Solver <ArrowRight size={15} /></a><a href="/computational-logic/proportional-logic">Logic Lab <ArrowRight size={15} /></a></div>
-          <div className="home-lab-footer"><span>6 sesi · bertahap</span><strong>Computational Logic <ArrowRight size={16} /></strong></div>
+          <div className="home-lab-footer"><span>7 sesi · bertahap</span><strong>Computational Logic <ArrowRight size={16} /></strong></div>
         </article>
       </div>
     </section>
