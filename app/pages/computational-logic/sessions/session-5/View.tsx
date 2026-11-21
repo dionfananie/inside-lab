@@ -6,8 +6,11 @@ import KnowledgeCheck from "../../check/KnowledgeCheck";
 import { sessionFiveCheck } from "./check";
 import "../session-1/session-1.css";
 import {
+  backwardChainingTrace,
   chainingComparisonTable,
+  chainingUseCases,
   consequenceVsRulesTable,
+  forwardChainingTrace,
   inferenceRules,
   misconceptionList,
   sessionFiveObjectives,
@@ -186,12 +189,130 @@ infer(facts, rules); // ["eligibleToBorrow"]`}</CodeBlock>
           <section className="session-one-section" aria-labelledby="chaining">
             <SectionHeading number="07" title="Forward & backward chaining" id="chaining" />
             <p>
-              Forward chaining berangkat dari fakta untuk mencari semua kesimpulan.
-              Backward chaining berangkat dari tujuan dan mencari buktinya.
+              Forward chaining dan backward chaining adalah dua strategi untuk
+              mengarahkan proses inferensi. Keduanya memakai fakta dan aturan yang
+              sama, tetapi bergerak dari arah yang berlawanan.
             </p>
-            <DataTable caption="Perbandingan forward dan backward chaining" headers={["Forward chaining", "Backward chaining"]} rows={chainingComparisonTable} />
+            <CodeBlock>{`Fakta awal: P
+Aturan:
+  1. P → Q
+  2. Q → R
+  3. R → S
+Goal: S`}</CodeBlock>
+
+            <h3>Forward chaining (data-driven)</h3>
+            <p>
+              Forward chaining berangkat dari fakta yang sudah diketahui, mencari
+              aturan yang seluruh premisnya terpenuhi, lalu menambahkan kesimpulan
+              aturan tersebut sebagai fakta baru. Proses diulang sampai goal
+              ditemukan atau tidak ada fakta baru yang dapat dihasilkan.
+            </p>
             <div className="session-one-example">
-              <p>Forward: P → Q → R (dari fakta). Backward: buktikan tujuan R dengan mencari P dan Q.</p>
+              <p>
+                Dari fakta P, aturan P → Q terpenuhi sehingga Q ditambahkan. Setelah
+                Q tersedia, Q → R terpenuhi sehingga R ditambahkan, lalu R → S
+                menghasilkan S.
+              </p>
+            </div>
+            <DataTable
+              caption="Trace forward chaining dari P menuju S"
+              headers={["Iterasi", "Fakta diketahui", "Aturan terpenuhi", "Kesimpulan baru"]}
+              rows={forwardChainingTrace}
+            />
+            <p>
+              Perhatikan bahwa forward chaining tidak perlu tahu goal di awal. Ia
+              menghasilkan fakta-fakta yang secara logis mengikuti fakta awal. Karena
+              itu, forward chaining cocok ketika sistem harus terus memantau
+              perubahan dan menghasilkan banyak kesimpulan.
+            </p>
+
+            <h3>Backward chaining (goal-driven)</h3>
+            <p>
+              Backward chaining berangkat dari goal, mencari aturan yang
+              kesimpulannya cocok dengan goal tersebut, lalu menjadikan premis aturan
+              itu sebagai subgoal. Proses diulang sampai semua subgoal terbukti
+              sebagai fakta atau sampai tidak ada aturan yang cocok.
+            </p>
+            <div className="session-one-example">
+              <p>
+                Untuk membuktikan S, sistem mencari aturan yang menyimpulkan S, yaitu
+                R → S. Maka R menjadi subgoal. R dibuktikan melalui Q → R, lalu Q
+                melalui P → Q. Karena P adalah fakta awal, seluruh rantai bukti
+                berhasil.
+              </p>
+            </div>
+            <DataTable
+              caption="Trace backward chaining dari goal S menuju fakta P"
+              headers={["Langkah", "Goal / subgoal", "Aturan yang dicocokkan", "Hasil"]}
+              rows={backwardChainingTrace}
+            />
+            <p>
+              Jika sebuah subgoal tidak dapat dibuktikan, sistem dapat melakukan{" "}
+              <em>backtracking</em> dan mencoba aturan lain. Backward chaining lebih
+              terarah karena hanya memeriksa bagian knowledge base yang relevan
+              dengan goal.
+            </p>
+
+            <h3>Perbandingan</h3>
+            <DataTable
+              caption="Perbandingan detail forward dan backward chaining"
+              headers={["Forward chaining", "Backward chaining"]}
+              rows={chainingComparisonTable}
+            />
+
+            <h3>Kapan memilih yang mana?</h3>
+            <div className="session-one-card-grid session-one-card-grid-2">
+              {chainingUseCases.map((item) => (
+                <article key={item.title}>
+                  <span>STRATEGI</span>
+                  <h4>{item.title}</h4>
+                  <p>{item.description}</p>
+                </article>
+              ))}
+            </div>
+
+            <h3>Pseudocode</h3>
+            <p>Forward chaining mengulang penerapan aturan sampai tidak ada fakta baru.</p>
+            <CodeBlock>{`facts = { P }
+rules = [ P → Q, Q → R, R → S ]
+
+repeat:
+  newFacts = {}
+  for rule in rules:
+    if semua premis rule ada di facts:
+      tambahkan conclusion rule ke newFacts
+
+  if newFacts kosong:
+    break
+
+  facts = facts ∪ newFacts`}</CodeBlock>
+            <p>
+              Backward chaining biasanya diimplementasikan secara rekursif dengan
+              daftar subgoal dan mekanisme backtracking.
+            </p>
+            <CodeBlock>{`function prove(goal, facts, rules, visited):
+  if goal in facts:
+    return true
+
+  if goal in visited:
+    return false
+
+  visited.add(goal)
+
+  for rule in rules where rule.conclusion == goal:
+    if semua premise rule dapat dibuktikan:
+      return true
+
+  return false`}</CodeBlock>
+            <div className="session-one-callout">
+              <strong>Catatan implementasi</strong>
+              <p>
+                Pada forward chaining, urutan pemilihan aturan dapat memengaruhi
+                efisiensi dan disebut <em>conflict resolution</em>. Pada backward
+                chaining, daftar <code>visited</code> mencegah subgoal yang sama
+                diproses berulang kali. Prolog secara default memakai strategi
+                backward chaining dengan backtracking.
+              </p>
             </div>
           </section>
 

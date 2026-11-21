@@ -85,10 +85,41 @@ export const consequenceVsRulesTable = [
 ];
 
 export const chainingComparisonTable = [
-  ["Berangkat dari fakta", "Berangkat dari tujuan"],
-  ["Mencari kesimpulan yang dapat dihasilkan", "Mencari bukti untuk tujuan"],
+  ["Berangkat dari fakta yang sudah diketahui", "Berangkat dari goal yang ingin dibuktikan"],
   ["Data-driven", "Goal-driven"],
-  ["Dapat menghasilkan banyak kesimpulan", "Fokus pada kesimpulan tertentu"],
+  ["Menerapkan aturan untuk menghasilkan fakta baru", "Mencari aturan yang dapat membuktikan goal"],
+  ["Dapat menghasilkan banyak kesimpulan sekaligus", "Fokus pada satu kesimpulan"],
+  ["Tidak perlu mengetahui goal di awal", "Harus mengetahui goal di awal"],
+  ["Risiko ledakan kombinasi fakta", "Risiko subgoal berulang atau loop tanpa kontrol"],
+  ["Cocok untuk monitoring, alert, dan diagnosis", "Cocok untuk query, Prolog, dan pembuktian"],
+];
+
+export const forwardChainingTrace = [
+  ["1", "P", "P → Q", "Q"],
+  ["2", "P, Q", "Q → R", "R"],
+  ["3", "P, Q, R", "R → S", "S (goal tercapai)"],
+  ["4", "P, Q, R, S", "Tidak ada aturan baru", "Proses berhenti"],
+];
+
+export const backwardChainingTrace = [
+  ["1", "S", "R → S", "Subgoal R"],
+  ["2", "R", "Q → R", "Subgoal Q"],
+  ["3", "Q", "P → Q", "Subgoal P"],
+  ["4", "P", "Fakta awal", "Berhasil; semua subgoal terpenuhi"],
+  ["5", "S", "Rantai bukti lengkap", "S terbukti"],
+];
+
+export const chainingUseCases = [
+  {
+    title: "Pilih forward chaining jika...",
+    description:
+      "Fakta terus bertambah dan sistem perlu menghasilkan semua konsekuensi yang mungkin, misalnya monitoring, deteksi anomali, alert, atau diagnosis dari gejala.",
+  },
+  {
+    title: "Pilih backward chaining jika...",
+    description:
+      "Goal sudah jelas dan sistem hanya perlu mencari bukti untuk goal tersebut, misalnya query knowledge base, sistem pakar konsultasi, atau eksekusi Prolog.",
+  },
 ];
 
 export const misconceptionList = [
