@@ -1,6 +1,7 @@
 import type { Route } from "./+types/computational-logic-session";
 
 import { canonicalOf, socialMeta } from "~/lib/seo";
+import { useTrackSessionView } from "~/lib/session-views";
 import { findLogicSession } from "~/pages/computational-logic/data";
 import ComputationalLogicSession from "~/pages/computational-logic/SessionView";
 import "~/pages/computational-logic/computational-logic.css";
@@ -23,5 +24,6 @@ export const meta: Route.MetaFunction = ({ loaderData }) => {
 };
 
 export default function ComputationalLogicSessionRoute({ loaderData }: Route.ComponentProps) {
+  useTrackSessionView(loaderData.session.session);
   return <ComputationalLogicSession sessionId={loaderData.session.session} />;
 }

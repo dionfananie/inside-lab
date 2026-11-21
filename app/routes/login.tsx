@@ -4,13 +4,16 @@ import '~/pages/auth.css';
 import { googleLoginUrl } from '~/lib/auth';
 import { InsideLabBrand } from '~/components/inside-lab-brand';
 
-export function meta({}: Route.MetaArgs) {
+export function meta(_: Route.MetaArgs) {
   return [{ title: 'Masuk — insideLab' }];
 }
 
 export default function Login() {
   const returnTo = typeof window !== 'undefined'
-    ? `${window.location.pathname}${window.location.search}`
+    ? new URLSearchParams(window.location.search).get('returnTo') ?? '/'
+    : '/';
+  const safeReturnTo = returnTo.startsWith('/') && !returnTo.startsWith('//')
+    ? returnTo
     : '/';
 
   return (
@@ -25,7 +28,7 @@ export default function Login() {
             dari perangkat lain.
           </p>
         </div>
-        <a className="auth-google-button" href={googleLoginUrl(returnTo)}>
+        <a className="auth-google-button" href={googleLoginUrl(safeReturnTo)}>
           <LogIn size={18} />
           Lanjutkan dengan Google
         </a>

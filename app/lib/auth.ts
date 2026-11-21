@@ -5,6 +5,7 @@ export type AuthUser = {
   email: string;
   name: string | null;
   avatar_url: string | null;
+  isAdmin?: boolean;
 };
 
 const AUTH_EVENT = 'inside-lab:auth';
@@ -13,7 +14,7 @@ export async function fetchMe(): Promise<AuthUser | null> {
   try {
     const response = await fetch('/api/auth/me', { credentials: 'same-origin' });
     if (!response.ok) return null;
-    const data = (await response.json()) as { user?: AuthUser | null };
+    const data = await response.json<{ user?: AuthUser | null }>();
     return data.user ?? null;
   } catch {
     return null;
@@ -30,6 +31,7 @@ export function useAuth() {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- refresh() sets loading/user state after async fetch
     void refresh();
     const listener = () => void refresh();
     window.addEventListener(AUTH_EVENT, listener);

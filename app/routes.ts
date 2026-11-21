@@ -8,6 +8,7 @@ export default [
 	route("robots.txt", "routes/robots-txt.ts"),
 	route("sitemap.xml", "routes/sitemap-xml.ts"),
 	route("login", "routes/login.tsx"),
+	route("dashboard", "routes/dashboard.tsx"),
 	route("computational-logic", "routes/computational-logic.tsx"),
 	route("computational-logic/session/:sessionId", "routes/computational-logic-session.tsx"),
 	route(

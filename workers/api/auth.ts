@@ -5,6 +5,7 @@ import {
   getSessionUser,
   setSessionCookie,
 } from '../lib/session';
+import { getAdminEmailSet } from '../lib/admin';
 
 const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
 const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token';
@@ -77,7 +78,7 @@ export async function authApi(request: Request, env: Env): Promise<Response> {
       headers: { authorization: `Bearer ${token.access_token}` },
     });
     if (!profileResponse.ok) return json({ error: 'Profil Google tidak berhasil dibaca.' }, 400);
-    const profile = (await profileResponse.json()) as GoogleProfile;
+    const profile = await profileResponse.json<GoogleProfile>();
     if (!profile.id || !profile.email) return json({ error: 'Google tidak mengembalikan identitas lengkap.' }, 400);
 
     const userId = `google:${profile.id}`;
@@ -108,8 +109,11 @@ export async function authApi(request: Request, env: Env): Promise<Response> {
     const user = await db
       .prepare('SELECT user_id, email, name, avatar_url FROM users WHERE user_id = ?')
       .bind(userId)
-      .first();
-    return json({ user: user ?? null });
+      .first<{ user_id: string; email: string; name: string | null; avatar_url: string | null }>();
+
+    const admins = getAdminEmailSet(env);
+    const isAdmin = user ? admins.has(user.email.toLowerCase()) : false;
+    return json({ user: user ? { ...user, isAdmin } : null });
   }
 
   if (pathname === '/api/auth/logout' && request.method === 'POST') {

@@ -26,6 +26,11 @@ export default function HomeHeader({ firstChapterHref }: HomeHeaderProps) {
             {user.name || user.email}
           </span>
         )}
+        {user?.isAdmin && (
+          <a className="auth-control" href="/dashboard">
+            Dashboard
+          </a>
+        )}
         <a className="home-header-cta" href={firstChapterHref}>
           Mulai belajar <ArrowRight size={15} />
         </a>
